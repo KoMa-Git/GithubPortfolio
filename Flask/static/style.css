@@ -30,6 +30,7 @@ footer {
     width: 400px;
     justify-content: center;
     justify-self: center;
+    margin:auto;
 }
 
 /* view.html */
