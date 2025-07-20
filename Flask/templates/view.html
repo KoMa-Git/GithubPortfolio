@@ -1,0 +1,17 @@
+{%extends "base.html" %}
+{% block title %}View all users{% endblock %}
+{% block content %}
+  {% for item in values %}
+    <div class="row">
+      <div class="column left">
+        <strong>Name:</strong> {{item.name}}
+      </div>
+      <div class="column middle">
+        <strong>Email:</strong> {{item.email}}
+      </div>
+      <div class="column right">
+        <strong>Password:</strong> {{item.password}}
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}

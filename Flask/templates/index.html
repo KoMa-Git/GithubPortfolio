@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title%}Homepage{% endblock %}
+{% block content %}
+<div style="text-align: center;">
+    <h1>This is a noice homepage</h1>
+    <p>And now count:</p>
+    {% for x in range(10,-1,-1): %}
+        {{x}}<br>
+    {% endfor %}
+</div>
+{% endblock %}

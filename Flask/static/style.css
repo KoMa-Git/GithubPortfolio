@@ -1,0 +1,63 @@
+/* footer always on bottom */
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 2.5rem;
+}
+
+/* icon inline with alert text */
+.as {
+   margin-top:5px;    
+}
+
+/* user button on navbar */
+.div-btn {
+    margin-right: 10px;
+}
+
+/* icon buttons special sizing */
+.btn-spec {
+    height: 30px;
+    width: 30px;
+    padding-top: 0px;
+    padding-left: 6px;
+    margin-top: -3px;
+    margin-left: 5px;
+}
+
+.alert {
+    width: 400px;
+    justify-content: center;
+    justify-self: center;
+}
+
+/* view.html */
+.column {
+  margin-bottom: 5px;
+}
+
+/* special indent at user,login and register pages */
+.left, .middle {
+  width: 20%;
+}
+
+.right {
+  width: 60%;
+}
+
+/* responsive layout */
+@media (max-width:800px){
+        .row {
+            display: inline;
+        }
+        .row-reg {
+            display: flex;
+        }
+        .left, .middle {
+            width: 10%;
+        }
+        .right {
+            width: 80%;
+        }
+    }
