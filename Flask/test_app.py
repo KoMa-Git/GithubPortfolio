@@ -31,7 +31,7 @@ def login_user(client, email="test@example.com", password="test123"):
     }, follow_redirects=True)
 
 def test_home_and_about_pages(client):
-    assert client.get("/").status_code == 400
+    assert client.get("/").status_code != 400
     assert client.get("/about").status_code != 400
 
 def test_register(client):
