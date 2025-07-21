@@ -1,60 +1,31 @@
-name: Run Pytest and Deploy Allure Report
+name: Run tests and publish Allure report with history
 
 on:
   push:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
   test-and-report:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
+    - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: 3.11
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
         pip install -r Flask/requirements.txt
         pip install allure-pytest
 
-    # Download previous report (contains history)
-    - name: Download previous history from gh-pages
-      run: |
-        git fetch origin gh-pages
-        git checkout origin/gh-pages -- history || echo "No previous history"
-        mkdir -p Flask/allure-results/history
-        cp -r history/* Flask/allure-results/history/ || echo "No history copied"
-
-    # Clean old results
-    - name: Remove old results and prepare new one
-      run: |
-        rm -rf Flask/allure-results
-        mkdir -p Flask/allure-results
-
-    # Run tests and collect new results
-    - name: Run tests and store new results
-      continue-on-error: true
-      run: |
-        pytest Flask/ --alluredir=Flask/allure-results
-
-    # Inject previous history into current results
-    - name: Inject previous history into new results
-      run: |
-        if [ -d "prev-report/history" ]; then
-          mkdir -p Flask/allure-results/history
-          cp -r prev-report/history/* Flask/allure-results/history/
-        else
-          echo "No previous history found"
-        fi
-
-    # Install Allure CLI
     - name: Install Allure CLI
       run: |
         wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
@@ -63,27 +34,47 @@ jobs:
         sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
         allure --version
 
-    # Generate final report
-    - name: Generate Allure report
+    - name: Checkout gh-pages branch to get previous report
+      run: |
+        git fetch origin gh-pages --depth=1
+        git checkout gh-pages || git checkout --orphan gh-pages
+        mkdir -p prev-report
+        # Copy previous allure-report to prev-report
+        cp -r * prev-report/ || echo "No previous report found"
+        git checkout main
+
+    - name: Clean allure-results
+      run: |
+        rm -rf Flask/allure-results
+
+    - name: Run tests and generate new allure-results
+      continue-on-error: true
+      run: |
+        pytest Flask/ --alluredir=Flask/allure-results
+
+    - name: Inject previous history into new allure-results
+      run: |
+        if [ -d "prev-report/allure-report/history" ]; then
+          mkdir -p Flask/allure-results/history
+          cp -r prev-report/allure-report/history/* Flask/allure-results/history/
+        else
+          echo "No previous history to inject"
+        fi
+
+    - name: Generate allure report with history
       run: |
         allure generate Flask/allure-results --clean -o Flask/allure-report
 
-    - name: Save updated history to gh-pages
+    - name: Deploy allure report to gh-pages branch
       run: |
-        cp -r Flask/allure-report/history ./history
-
-    # Upload full new report for history reuse
-    - name: Upload Allure report (with history)
-      uses: actions/upload-artifact@v4
-      with:
-        name: allure-report
-        path: Flask/allure-report
-
-    # Deploy to GitHub Pages
-    - name: Deploy Allure report to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GH_PAT }}
-        publish_dir: ./Flask/allure-report
-        publish_branch: gh-pages
-        force_orphan: true
+        git config --global user.email "actions@github.com"
+        git config --global user.name "GitHub Actions"
+        git checkout gh-pages || git checkout --orphan gh-pages
+        # Clear old report
+        rm -rf *
+        # Copy new report and history
+        cp -r Flask/allure-report/* .
+        touch .nojekyll
+        git add .
+        git commit -m "Update Allure report with history"
+        git push origin gh-pages --force
