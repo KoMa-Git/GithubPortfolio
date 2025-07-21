@@ -14,7 +14,7 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # IMPORTANT: needed to retain history
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -28,6 +28,15 @@ jobs:
         pip install -r requirements.txt
         pip install allure-pytest
 
+    - name: Install Allure CLI
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openjdk-11-jre-headless
+        wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+        tar -zxvf allure-2.27.0.tgz
+        sudo mv allure-2.27.0 /opt/allure
+        sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+
     - name: Run tests and generate Allure report
       working-directory: ./Flask
       run: |
@@ -40,7 +49,7 @@ jobs:
     - name: Deploy Allure report to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GH_PAT }}
         publish_branch: gh-pages
-        publish_dir: ./allure-report
+        publish_dir: ./Flask/allure-report
         keep_files: true
