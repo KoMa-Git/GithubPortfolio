@@ -49,7 +49,7 @@ jobs:
 
         # Copy the history folder if it exists
         if [ -d "history" ]; then
-          cp -r history/ ../prev/history/
+          cp -r history/ ../prev/
           echo "✅ Copied history to prev/history"
         else
           echo "⚠️ No history directory found in gh-pages"
