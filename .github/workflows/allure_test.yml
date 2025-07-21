@@ -41,7 +41,7 @@ jobs:
 
     - name: Run pytest with Allure
       run: |
-        pytest Flask/tests --alluredir=Flask/allure-results
+        pytest Flask/ --alluredir=Flask/allure-results
       continue-on-error: true  # allow test failure but keep workflow running
 
     - name: Restore previous history into results
