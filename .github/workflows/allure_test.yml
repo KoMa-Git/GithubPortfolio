@@ -48,7 +48,7 @@ jobs:
         git fetch origin gh-pages --depth=1
 
         git checkout gh-pages
-
+        ls
         # Copy previous history if exists
         if [ -d "history" ]; then
           cp -r history Flask/allure-results/history/
