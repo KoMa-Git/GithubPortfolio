@@ -30,10 +30,12 @@ jobs:
       # 4. Download Allure CLI
       - name: Install Allure CLI
         run: |
-          curl -o allure.tgz -L https://github.com/allure-framework/allure2/releases/latest/download/allure-2.27.0.tgz
-          tar -xvzf allure.tgz
-          sudo mv allure-2.27.0/bin/allure /usr/local/bin/allure
-          allure --version
+          sudo apt-get update
+          sudo apt-get install -y default-jre wget unzip
+          wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          tar -xvzf allure-2.27.0.tgz
+          sudo mv allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
 
       # 5. Prepare directory for Allure results
       - name: Create Allure folders
