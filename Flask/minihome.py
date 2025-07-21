@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 import bcrypt
 import os
 
-# initialize app, add secret key for session handling, session time limit, SQL server connection
+# initialize app, add secret key for session handling, session time limit, SQL server connection (use Render locally and memory for CI)
 app = Flask(__name__)
 app.secret_key = "somethingkrixkrax"
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('RENDER_SQL','sqlite:///:memory:')
