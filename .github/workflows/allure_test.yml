@@ -71,13 +71,29 @@ jobs:
     - name: Inject previous history into new allure-results
       run: |
         
-        # cd prev/history
-        # ls
-        
-        # Copy previous history if exists
-        if [ -d "prev/history/" ]; then
-          cp -r prev/history/ Flask/allure-results/history/
-          echo "✅ Previous history copied"
+        # Ensure we start on main (or your default branch)
+        git checkout main
+
+        # Create directory to store copied history
+        mkdir -p prev/history
+
+        # Fetch the gh-pages branch
+        git fetch origin gh-pages --depth=1
+
+        # Create a temporary directory to check out gh-pages contents
+        mkdir gh-temp
+        cd gh-temp
+
+        # Check out just the gh-pages branch contents (sparse checkout to avoid mixing branches)
+        git init
+        git remote add origin https://github.com/${{ github.repository }}.git
+        git fetch origin gh-pages --depth=1
+        git checkout origin/gh-pages
+
+        # Copy the history folder if it exists
+        if [ -d "history" ]; then
+          cp -r history/ ../Flask/allure-results/
+          echo "✅ Copied history to prev/history"
         else
           echo "⚠️ No history directory found in gh-pages"
         fi
