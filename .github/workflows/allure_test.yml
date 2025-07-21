@@ -25,12 +25,12 @@ jobs:
         pip install allure-pytest
 
     # Download previous report (contains history)
-    - name: Download previous Allure report
-      uses: actions/download-artifact@v4
-      with:
-        name: allure-report
-        path: prev-report
-      continue-on-error: true
+    - name: Download previous history from gh-pages
+      run: |
+        git fetch origin gh-pages
+        git checkout origin/gh-pages -- history || echo "No previous history"
+        mkdir -p Flask/allure-results/history
+        cp -r history/* Flask/allure-results/history/ || echo "No history copied"
 
     # Clean old results
     - name: Remove old results and prepare new one
@@ -40,6 +40,7 @@ jobs:
 
     # Run tests and collect new results
     - name: Run tests and store new results
+      continue-on-error: true
       run: |
         pytest Flask/ --alluredir=Flask/allure-results
 
@@ -66,6 +67,10 @@ jobs:
     - name: Generate Allure report
       run: |
         allure generate Flask/allure-results --clean -o Flask/allure-report
+
+    - name: Save updated history to gh-pages
+      run: |
+        cp -r Flask/allure-report/history ./history
 
     # Upload full new report for history reuse
     - name: Upload Allure report (with history)
