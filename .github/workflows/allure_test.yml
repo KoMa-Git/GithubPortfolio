@@ -34,19 +34,6 @@ jobs:
         sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
         allure --version
 
-    - name: Checkout gh-pages branch to get previous report
-      run: |
-        git fetch origin gh-pages --depth=1
-        git checkout gh-pages || git checkout --orphan gh-pages
-        mkdir -p prev-report
-        # Copy previous allure-report to prev-report
-        cp -r * prev-report/ || echo "No previous report found"
-        git checkout main
-
-    - name: Clean allure-results
-      run: |
-        rm -rf Flask/allure-results
-
     - name: Run tests and generate new allure-results
       continue-on-error: true
       run: |
@@ -54,16 +41,27 @@ jobs:
 
     - name: Inject previous history into new allure-results
       run: |
-        if [ -d "prev-report/allure-report/history" ]; then
-          mkdir -p Flask/allure-results/history
-          cp -r prev-report/allure-report/history/* Flask/allure-results/history/
+        
+        # Fetch gh-pages branch shallowly to reduce data
+        git fetch origin gh-pages --depth=1
+
+        git checkout gh-pages
+
+        # Copy previous history if exists
+        if [ -d "history" ]; then
+          cp -r history Flask/allure-results/history/
+          echo "✅ Previous history copied"
         else
-          echo "No previous history to inject"
+          echo "⚠️ No history directory found in gh-pages"
         fi
 
+        # Go back to main
+        git checkout -
+      
     - name: Generate allure report with history
       run: |
-        allure generate Flask/allure-results --clean -o Flask/allure-report
+        allure generate Flask/allure-results 
+        # --clean -o Flask/allure-report
 
     - name: Deploy allure report to gh-pages branch
       run: |
