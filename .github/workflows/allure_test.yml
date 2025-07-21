@@ -71,7 +71,7 @@ jobs:
     - name: Inject previous history into new allure-results
       run: |
         
-        cd prev/history
+        cd prev/history/history
         ls
         
         # Copy previous history if exists
