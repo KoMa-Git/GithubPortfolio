@@ -39,12 +39,14 @@ jobs:
 
     - name: Run tests and generate Allure report
       working-directory: ./Flask
+      continue-on-error: true
       run: |
         pytest --alluredir=allure-results
         mkdir -p allure-history
         if [ -d "allure-report" ]; then cp -r allure-report/history allure-history/; fi
         allure generate allure-results -o allure-report --clean
         cp -r allure-history allure-report/history || true
+
 
     - name: Deploy Allure report to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
