@@ -28,16 +28,10 @@ jobs:
 
     - name: download allure-history from gh-pages
       run: |
-        git fetch origin gh-pages --depth=1
-        git checkout gh-pages
-        ls
-        if [ -d "history" ]; then
-          mkdir Flask/allure-results/history/
-          cp -r history Flask/allure-results/history/
-          echo "✅ Previous history copied"
-        else
-          echo "⚠️ No history directory found in gh-pages"
-        fi
+        git checkout gh-pages -- history
+        git add history
+        git commit -m "Copy history from gh-pages to main"
+        git push origin main
 
     - name: Install Allure CLI
       run: |
