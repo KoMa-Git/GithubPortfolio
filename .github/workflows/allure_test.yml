@@ -25,17 +25,26 @@ jobs:
           pip install -r Flask/requirements.txt
           pip install allure-pytest
 
-      - name: Download previous Allure report
+      - name: Create allure-results folder
+        run: mkdir -p ./Flask/allure-results
+
+      - name: Try to download previous Allure report
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: allure-full-report
           path: ./Flask
 
-      - name: Extract previous report
+      - name: Extract previous history if available
         run: |
-          mkdir -p ./Flask/allure-results/history
-          tar -xzf ./Flask/allure-full-report.tar.gz -C ./Flask || echo "No previous report"
-          cp -r ./Flask/allure-report/history/* ./Flask/allure-results/history/ || echo "No previous history to copy"
+          mkdir -p ./Flask/allure-report ./Flask/allure-results/history
+          if [ -f ./Flask/allure-full-report.tar.gz ]; then
+            echo "Extracting previous history"
+            tar -xzf ./Flask/allure-full-report.tar.gz -C ./Flask
+            cp -r ./Flask/allure-report/history/* ./Flask/allure-results/history/ || echo "No history folder inside archive"
+          else
+            echo "No previous report archive found (likely first run)"
+          fi
 
       - name: Run tests with Allure
         run: |
@@ -47,19 +56,16 @@ jobs:
         run: |
           allure generate ./Flask/allure-results --clean -o ./Flask/allure-report
 
-      - name: Ensure history exists
-        run: mkdir -p ./Flask/allure-report/history
-
-      - name: Package Allure report for next run
+      - name: Package Allure report (incl. history)
         run: tar -czf allure-full-report.tar.gz -C ./Flask allure-report
 
-      - name: Upload Allure report as artifact
+      - name: Upload Allure report artifact for next run
         uses: actions/upload-artifact@v4
         with:
           name: allure-full-report
           path: allure-full-report.tar.gz
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy Allure report to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
