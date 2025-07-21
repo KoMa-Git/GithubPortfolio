@@ -42,6 +42,7 @@ jobs:
     - name: Inject previous history into new allure-results
       run: |
         
+        ls 
         # Fetch gh-pages branch shallowly to reduce data
         git fetch origin gh-pages --depth=1
 
