@@ -2,8 +2,13 @@ name: Run tests and publish Allure report with history
 
 on:
   push:
-    branches: [main]
+    paths:
+      - 'Flask/**'
+    paths-ignore:
+      - '**/*.md'
   pull_request:
+    paths:
+      - 'Flask/**'
 
 permissions:
   contents: write
