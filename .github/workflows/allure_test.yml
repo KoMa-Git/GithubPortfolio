@@ -32,7 +32,7 @@ jobs:
         git checkout gh-pages
         ls
         if [ -d "history" ]; then
-          cp -r history prev/history/
+          cp -r history Flask/allure-results/history/
           echo "✅ Previous history copied"
         else
           echo "⚠️ No history directory found in gh-pages"
