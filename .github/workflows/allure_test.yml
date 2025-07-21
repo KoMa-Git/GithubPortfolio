@@ -1,75 +1,69 @@
-name: Run Tests and Deploy Allure Report
+name: Run tests and publish Allure report
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  test-and-deploy:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.11
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
 
-    - name: Install dependencies
-      working-directory: ./Flask
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install allure-pytest
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r Flask/requirements.txt
+          pip install allure-pytest
 
-    - name: Install Allure CLI
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y openjdk-11-jre-headless
-        wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
-        tar -zxvf allure-2.27.0.tgz
-        sudo mv allure-2.27.0 /opt/allure
-        sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+      - name: Download previous Allure report
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-full-report
+          path: ./Flask
 
-    - name: Download previous Allure history
-      uses: actions/download-artifact@v4
-      with:
-        name: allure-history
-        path: ./Flask/prev-history
+      - name: Extract previous report
+        run: |
+          mkdir -p ./Flask/allure-results/history
+          tar -xzf ./Flask/allure-full-report.tar.gz -C ./Flask || echo "No previous report"
+          cp -r ./Flask/allure-report/history/* ./Flask/allure-results/history/ || echo "No previous history to copy"
 
-    - name: Run tests and generate Allure report (even on failure)
-      working-directory: ./Flask
-      run: |
-        # Run tests, always continue
-        pytest --alluredir=allure-results || echo "Tests failed but continuing..."
+      - name: Run tests with Allure
+        run: |
+          pytest Flask/tests --alluredir=Flask/allure-results
+        env:
+          RENDER_SQL: ${{ secrets.RENDER_SQL }}
 
-        mkdir -p allure-results/history
-        cp -r ./prev-history/* allure-results/history || echo "No previous history"
-        allure generate allure-results -o allure-report --clean
+      - name: Generate Allure report
+        run: |
+          allure generate ./Flask/allure-results --clean -o ./Flask/allure-report
 
-    - name: Package Allure history (or create empty)
-      if: always()
-      run: |
-        mkdir -p ./Flask/allure-report/history
-        tar -czf history.tar.gz -C ./Flask/allure-report history
+      - name: Ensure history exists
+        run: mkdir -p ./Flask/allure-report/history
 
-    - name: Upload Allure history artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: allure-history
-        path: history.tar.gz
+      - name: Package Allure report for next run
+        run: tar -czf allure-full-report.tar.gz -C ./Flask allure-report
 
-    - name: Deploy Allure report to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GH_PAT }}
-        publish_branch: gh-pages
-        publish_dir: ./Flask/allure-report
-        keep_files: true
+      - name: Upload Allure report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-full-report
+          path: allure-full-report.tar.gz
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./Flask/allure-report
+          publish_branch: gh-pages
+          force_orphan: true
