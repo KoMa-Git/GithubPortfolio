@@ -53,12 +53,18 @@ jobs:
         cp -r ./prev-history/* allure-results/history || echo "No previous history"
         allure generate allure-results -o allure-report --clean
 
-    - name: Upload Allure history
+    - name: Package Allure history (or create empty)
+      if: always()
+      run: |
+        mkdir -p ./Flask/allure-report/history
+        tar -czf history.tar.gz -C ./Flask/allure-report history
+
+    - name: Upload Allure history artifact
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: allure-history
-        path: ./Flask/allure-report/history
+        path: history.tar.gz
 
     - name: Deploy Allure report to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
