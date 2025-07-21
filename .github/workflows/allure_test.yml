@@ -48,8 +48,8 @@ jobs:
         git checkout origin/gh-pages
 
         # Copy the history folder if it exists
-        if [ -d "allure-report/history" ]; then
-          cp -r allure-report/history ../prev/history/
+        if [ -d "history" ]; then
+          cp -r history ../prev/history/
           echo "✅ Copied history to prev/history"
         else
           echo "⚠️ No history directory found in gh-pages"
