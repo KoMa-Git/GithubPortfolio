@@ -71,12 +71,11 @@ jobs:
     - name: Inject previous history into new allure-results
       run: |
         
-        cd gh-temp
         ls
         
         # Copy previous history if exists
         if [ -d "history" ]; then
-          cp -r history Flask/allure-results/history/
+          cp -r gh-temp/history Flask/allure-results/history/
           echo "✅ Previous history copied"
         else
           echo "⚠️ No history directory found in gh-pages"
