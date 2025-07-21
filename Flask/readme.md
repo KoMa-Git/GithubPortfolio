@@ -8,14 +8,12 @@ https://githubportfolio.onrender.com
 
 ## Ready:
 - microsite simulating a login, register and user settings with a live database connection. Passwords keep hashed in db of course. Minimal html and css handling with Bootstrap, just to don't hurt our eyes.
+- Unit tests made with pytest
+- Test results will deploy on GitHub Pages with help of Allure. Check it out: https://koma-git.github.io/GithubPortfolio/
+
 
 ## In progress... :
-- Unit test made with pytest
-
 - Automate tests made with Selenium and Playwright can find in test folder
-
-- Test results will deploy on GitHub Pages with help of Allure.
-
 
 
 ## 🛠 Skills
