@@ -28,10 +28,32 @@ jobs:
 
     - name: download allure-history from gh-pages
       run: |
-        git checkout gh-pages -- history
-        git add history
-        git commit -m "Copy history from gh-pages to main"
-        git push origin main
+        # Ensure we start on main (or your default branch)
+        git checkout main
+
+        # Create directory to store copied history
+        mkdir -p prev/history
+
+        # Fetch the gh-pages branch
+        git fetch origin gh-pages --depth=1
+
+        # Create a temporary directory to check out gh-pages contents
+        mkdir gh-temp
+        cd gh-temp
+
+        # Check out just the gh-pages branch contents (sparse checkout to avoid mixing branches)
+        git init
+        git remote add origin https://github.com/${{ github.repository }}.git
+        git fetch origin gh-pages --depth=1
+        git checkout origin/gh-pages
+
+        # Copy the history folder if it exists
+        if [ -d "allure-report/history" ]; then
+          cp -r allure-report/history ../prev/history/
+          echo "✅ Copied history to prev/history"
+        else
+          echo "⚠️ No history directory found in gh-pages"
+        fi
 
     - name: Install Allure CLI
       run: |
