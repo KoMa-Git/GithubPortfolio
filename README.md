@@ -32,8 +32,8 @@ Here are some of the key areas of expertise I have been developing:
 
 This repository contains simpler pet projects in separate folder that shows my testing and coding skills :
 
-- Flask : build a mini homepage for test automation, learning backend-frontend connections
-- FastAPI : building a demo API for testing in Postman
+- **Flask** : build a mini homepage for test automation, learning backend-frontend connections
+- **FastAPI** : building a demo API for testing in Postman
 
 ## Let's Connect
 
