@@ -7,7 +7,7 @@ import os
 # initialize app, add secret key for session handling, session time limit, SQL server connection
 app = Flask(__name__)
 app.secret_key = "somethingkrixkrax"
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['RENDER_SQL']
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('RENDER_SQL','sqlite:///:memory:')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.permanent_session_lifetime = timedelta(minutes=5)
 
