@@ -28,6 +28,7 @@ jobs:
 
     - name: download allure-history from gh-pages
       run: |
+        git fetch origin gh-pages --depth=1
         git checkout gh-pages
         ls
 
