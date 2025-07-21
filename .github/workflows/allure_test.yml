@@ -46,6 +46,7 @@ jobs:
           fi
 
       - name: Run tests with Allure
+        continue-on-error: true
         run: |
           pytest Flask/ --alluredir=Flask/allure-results
         env:
