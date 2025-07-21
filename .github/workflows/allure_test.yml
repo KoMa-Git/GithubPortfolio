@@ -71,14 +71,8 @@ jobs:
     - name: Inject previous history into new allure-results
       run: |
         
-        cd Flask
         ls
-        # Fetch gh-pages branch shallowly to reduce data
-        git fetch origin gh-pages --depth=1
-
-        git checkout gh-pages
-        cd allure-results
-        ls
+        
         # Copy previous history if exists
         if [ -d "history" ]; then
           cp -r history Flask/allure-results/history/
