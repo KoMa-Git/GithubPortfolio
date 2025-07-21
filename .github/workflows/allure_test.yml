@@ -39,35 +39,36 @@ jobs:
       run: |
         pytest Flask/ --alluredir=Flask/allure-results
 
-    - name: Inject previous history into new allure-results
+    - name: Download and inject previous history from gh-pages
       run: |
-        
-        # Ensure we start on main (or your default branch)
-        git checkout main
+        # Setup paths
+        RESULTS_DIR=Flask/allure-results
+        TEMP_DIR=gh-temp
+        HISTORY_DIR=history
 
-        # Create directory to store copied history
-        mkdir -p prev/history
+        # Prepare result directory and temp working dir
+        # mkdir -p $RESULTS_DIR
+        mkdir -p $TEMP_DIR
+        cd $TEMP_DIR
 
-        # Fetch the gh-pages branch
-        git fetch origin gh-pages --depth=1
-
-        # Create a temporary directory to check out gh-pages contents
-        mkdir gh-temp
-        cd gh-temp
-
-        # Check out just the gh-pages branch contents (sparse checkout to avoid mixing branches)
-        git init
+        # Fetch only gh-pages branch into isolated repo
+        git init -q
         git remote add origin https://github.com/${{ github.repository }}.git
         git fetch origin gh-pages --depth=1
         git checkout origin/gh-pages
 
-        # Copy the history folder if it exists
-        if [ -d "history" ]; then
-          cp -r history/ ../Flask/allure-results/
-          echo "✅ Copied history to prev/history"
+        # Copy history if it exists
+        if [ -d "$HISTORY_DIR" ]; then
+          cp -r $HISTORY_DIR ../$RESULTS_DIR/
+          echo "✅ Injected previous history into $RESULTS_DIR/"
         else
           echo "⚠️ No history directory found in gh-pages"
         fi
+
+        # Cleanup
+        cd ..
+        rm -rf $TEMP_DIR
+
       
     - name: Generate allure report with history
       run: |
