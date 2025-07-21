@@ -37,14 +37,28 @@ jobs:
         sudo mv allure-2.27.0 /opt/allure
         sudo ln -s /opt/allure/bin/allure /usr/bin/allure
 
-    - name: Run tests and generate Allure report
+    - name: Download previous Allure history
+      uses: actions/download-artifact@v4
+      with:
+        name: allure-history
+        path: ./Flask/prev-history
+
+    - name: Run tests and generate Allure report (even on failure)
       working-directory: ./Flask
       run: |
-        pytest --alluredir=allure-results
-        mkdir -p allure-history
-        if [ -d "allure-report" ]; then cp -r allure-report/history allure-history/; fi
+        # Run tests, always continue
+        pytest --alluredir=allure-results || echo "Tests failed but continuing..."
+
+        mkdir -p allure-results/history
+        cp -r ./prev-history/* allure-results/history || echo "No previous history"
         allure generate allure-results -o allure-report --clean
-        cp -r allure-history allure-report/history || true
+
+    - name: Upload Allure history
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-history
+        path: ./Flask/allure-report/history
 
     - name: Deploy Allure report to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
