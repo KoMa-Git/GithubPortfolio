@@ -54,7 +54,7 @@ jobs:
       - name: Run Pytest with Allure
         continue-on-error: true  # Prevent early exit
         run: |
-          pytest Flask/tests --alluredir=Flask/allure-results || echo "Tests failed but continuing"
+          pytest Flask/ --alluredir=Flask/allure-results || echo "Tests failed but continuing"
 
       # 8. Generate Allure Report
       - name: Generate Allure Report with history
