@@ -26,35 +26,6 @@ jobs:
         pip install -r Flask/requirements.txt
         pip install allure-pytest
 
-    - name: download allure-history from gh-pages
-      run: |
-        # Ensure we start on main (or your default branch)
-        git checkout main
-
-        # Create directory to store copied history
-        mkdir -p prev/history
-
-        # Fetch the gh-pages branch
-        git fetch origin gh-pages --depth=1
-
-        # Create a temporary directory to check out gh-pages contents
-        mkdir gh-temp
-        cd gh-temp
-
-        # Check out just the gh-pages branch contents (sparse checkout to avoid mixing branches)
-        git init
-        git remote add origin https://github.com/${{ github.repository }}.git
-        git fetch origin gh-pages --depth=1
-        git checkout origin/gh-pages
-
-        # Copy the history folder if it exists
-        if [ -d "history" ]; then
-          cp -r history/ ../prev/
-          echo "✅ Copied history to prev/history"
-        else
-          echo "⚠️ No history directory found in gh-pages"
-        fi
-
     - name: Install Allure CLI
       run: |
         wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
