@@ -39,7 +39,7 @@ This repository contains simpler pet projects in separate folder that shows my t
 
 I'm always open to collaborating, discussing software testing, and exchanging knowledge. Feel free to reach out to me for any inquiries, suggestions, or opportunities to work together!
 
-- LinkedIn: [Your LinkedIn Profile](#)
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://hu.linkedin.com/in/m%C3%A1ty%C3%A1s-k%C3%B3czi-391b9a354?trk=people-guest_people_search-card)
 
 Thank you for visiting my portfolio! Feel free to explore and see how I'm continuously improving my skills in the world of software testing.
 
