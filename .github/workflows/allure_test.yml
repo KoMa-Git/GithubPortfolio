@@ -26,6 +26,11 @@ jobs:
         pip install -r Flask/requirements.txt
         pip install allure-pytest
 
+    - name: download allure-history from gh-pages
+      run: |
+        git checkout gh-pages
+        ls
+
     - name: Install Allure CLI
       run: |
         wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
