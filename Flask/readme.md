@@ -20,8 +20,3 @@ https://githubportfolio.onrender.com
 
 ## 🛠 Skills
 Python, SQL, HTML, CSS, JS...
-
-
-## 🔗 Links
-
-[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://hu.linkedin.com/in/m%C3%A1ty%C3%A1s-k%C3%B3czi-391b9a354?trk=people-guest_people_search-card)
