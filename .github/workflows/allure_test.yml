@@ -22,12 +22,14 @@ jobs:
         python-version: 3.11
 
     - name: Install dependencies
+      working-directory: ./Flask
       run: |
         python -m pip install --upgrade pip
-        pip install -r flask/requirements.txt
+        pip install -r requirements.txt
         pip install allure-pytest
 
     - name: Run tests and generate Allure report
+      working-directory: ./Flask
       run: |
         pytest --alluredir=allure-results
         mkdir -p allure-history
