@@ -37,30 +37,30 @@ jobs:
         sudo mv allure-2.27.0 /opt/allure
         sudo ln -s /opt/allure/bin/allure /usr/bin/allure
 
-    - name: Run tests and generate Allure report
+    - name: Run tests and generate Allure report (even on failure)
       working-directory: ./Flask
-      continue-on-error: true
       run: |
-        pytest --alluredir=allure-results
+        # Run tests, always continue
+        pytest --alluredir=allure-results || echo "Tests failed but continuing..."
 
-        # Download previous report history from gh-pages
+        # Fetch gh-pages and try to recover previous history
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Actions"
-        git fetch origin gh-pages --depth=1
+
+        git fetch origin gh-pages --depth=1 || echo "No gh-pages branch yet"
         git checkout gh-pages || git checkout -b gh-pages
+
         mkdir -p ../prev-history
         cp -r ./allure-report/history ../prev-history || echo "No previous history"
 
-        # Go back to main branch for report generation
         git checkout -
 
-        # Restore previous history into results
+        # Restore history into allure-results
         mkdir -p allure-results/history
         cp -r ../prev-history/* allure-results/history || echo "No history to restore"
 
-        # Generate new report including history
+        # Generate new report with history
         allure generate allure-results -o allure-report --clean
-
 
     - name: Deploy Allure report to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
