@@ -46,8 +46,7 @@ jobs:
         TEMP_DIR=gh-temp
         HISTORY_DIR=history
 
-        # Prepare result directory and temp working dir
-        # mkdir -p $RESULTS_DIR
+        # Prepare temp working dir
         mkdir -p $TEMP_DIR
         cd $TEMP_DIR
 
