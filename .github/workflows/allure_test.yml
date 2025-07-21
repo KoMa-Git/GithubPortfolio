@@ -72,7 +72,7 @@ jobs:
       run: |
         
         # cd prev/history/history
-        # ls
+        ls
         
         # Copy previous history if exists
         if [ -d "prev/history/" ]; then
