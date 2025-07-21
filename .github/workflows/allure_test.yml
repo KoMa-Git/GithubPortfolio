@@ -31,6 +31,12 @@ jobs:
         git fetch origin gh-pages --depth=1
         git checkout gh-pages
         ls
+        if [ -d "history" ]; then
+          cp -r history prev/history/
+          echo "✅ Previous history copied"
+        else
+          echo "⚠️ No history directory found in gh-pages"
+        fi
 
     - name: Install Allure CLI
       run: |
