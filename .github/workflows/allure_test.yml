@@ -24,6 +24,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r Flask/requirements.txt
 
+      - name: Install Allure CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jre
+          curl -o allure.tgz -L https://github.com/allure-framework/allure2/releases/latest/download/allure-2.27.0.tgz
+          tar -zxvf allure.tgz
+          sudo mv allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+          allure --version
+
       - name: Create allure-results folder
         run: mkdir -p ./Flask/allure-results
 
