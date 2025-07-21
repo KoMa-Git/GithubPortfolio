@@ -1,86 +1,73 @@
-name: Python Tests with Allure
+name: Run Tests and Publish Allure Report
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
+    name: Run Pytest with Allure and Deploy Report
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the code
-      - name: Checkout main code
+      ### 1. Checkout the repo
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Set up Python
+      ### 2. Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
-      # 3. Install dependencies
-      - name: Install dependencies
+      ### 3. Install dependencies
+      - name: Install Python dependencies
         run: |
           pip install -r Flask/requirements.txt
-          pip install pytest pytest-allure-adaptor allure-pytest
+          pip install pytest allure-pytest
 
-      # 4. Download Allure CLI
+      ### 4. Install Allure CLI
       - name: Install Allure CLI
         run: |
-          sudo apt-get update
-          sudo apt-get install -y default-jre wget unzip
-          wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
-          tar -xvzf allure-2.27.0.tgz
-          sudo mv allure-2.27.0 /opt/allure
-          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+          curl -o allure.tgz -L https://github.com/allure-framework/allure2/releases/latest/download/allure-2.27.0.tgz
+          tar -xzf allure.tgz
+          sudo mv allure-2.27.0/bin/allure /usr/local/bin/
+          allure --version
 
-      # 5. Prepare directory for Allure results
-      - name: Create Allure folders
+      ### 5. Run tests with Allure results
+      - name: Run pytest
+        continue-on-error: true
         run: |
           mkdir -p Flask/allure-results
-          mkdir -p Flask/allure-report
+          pytest Flask/ --alluredir=Flask/allure-results || true
 
-      # 6. Restore previous history from gh-pages
-      - name: Fetch previous history from gh-pages
-        run: |
-          git fetch origin gh-pages
-          git checkout gh-pages || git checkout --orphan gh-pages
-          mkdir -p Flask/allure-history
-          cp -r ./Flask/allure-report/history ./Flask/allure-history || echo "No history to copy"
-          git checkout main
+      ### 6. Download previous history
+      - name: Download previous Allure history artifact
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: allure-history
+          path: Flask/allure-results/history
 
-      # 7. Run tests
-      - name: Run Pytest with Allure
-        continue-on-error: true  # Prevent early exit
+      ### 7. Generate Allure report (with injected history)
+      - name: Generate Allure report
         run: |
-          pytest Flask/ --alluredir=Flask/allure-results || echo "Tests failed but continuing"
-
-      # 8. Generate Allure Report
-      - name: Generate Allure Report with history
-        run: |
-          cp -r Flask/allure-history/* Flask/allure-results/history/ || echo "No previous history to merge"
           allure generate Flask/allure-results --clean -o Flask/allure-report
 
-      # 9. Upload Allure Report to gh-pages
-      - name: Deploy Allure Report to gh-pages
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git fetch origin gh-pages
-          git checkout gh-pages || git checkout --orphan gh-pages
-          rm -rf *
-          cp -r Flask/allure-report/* .
-          git add .
-          git commit -m "Update Allure report from CI on ${{ github.sha }}" || echo "No changes to commit"
-          git push origin gh-pages
-
-      # 10. Upload latest report as artifact (optional)
-      - name: Upload full Allure report
+      ### 8. Save new history for next run
+      - name: Upload updated Allure history
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
-          path: Flask/allure-report
+          name: allure-history
+          path: Flask/allure-report/history
+
+      ### 9. Deploy report to GitHub Pages
+      - name: Deploy Allure report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GH_PAT }}
+          publish_dir: ./Flask/allure-report
+          publish_branch: gh-pages
+          force_orphan: true
