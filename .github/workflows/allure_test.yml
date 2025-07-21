@@ -48,10 +48,11 @@ jobs:
         git fetch origin gh-pages --depth=1
 
         git checkout gh-pages
+        cd allure-results
         ls
         # Copy previous history if exists
-        if [ -d "allure-results/history" ]; then
-          cp -r allure-results/history Flask/allure-results/history/
+        if [ -d "history" ]; then
+          cp -r history Flask/allure-results/history/
           echo "✅ Previous history copied"
         else
           echo "⚠️ No history directory found in gh-pages"
