@@ -9,7 +9,8 @@ on:
     paths:
       - 'Flask/**'
       - '!Flask/readme.md'
-
+  workflow_dispatch:
+  
 permissions:
   contents: write
 
