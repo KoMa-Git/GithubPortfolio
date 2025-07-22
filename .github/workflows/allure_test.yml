@@ -4,9 +4,11 @@ on:
   push:
     paths:
       - 'Flask/**'
+      - '!Flask/README.md'
   pull_request:
     paths:
       - 'Flask/**'
+      - '!Flask/README.md'
 
 permissions:
   contents: write
