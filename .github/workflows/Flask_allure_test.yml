@@ -76,7 +76,7 @@ jobs:
       
     - name: Generate allure report with history
       run: |
-        allure generate Flask/allure-results --clean -o Flask/allure-report
+        allure generate Flask/allure-results -o Flask/allure-report --clean
 
     - name: Deploy Allure report to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
