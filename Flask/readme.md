@@ -1,5 +1,5 @@
 
-# Flask mini page for automate testing
+# Flask microsite for automate testing
 
 This is a small project where i could show my enthusiasm about coding, testing and connecting things together.
 
