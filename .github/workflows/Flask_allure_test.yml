@@ -1,4 +1,4 @@
-name: Run tests and publish Allure report with history
+name: Run tests on Flask app and publish Allure report with history
 
 on:
   push:
