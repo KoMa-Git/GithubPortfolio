@@ -1,4 +1,4 @@
-# My Software Testing and Coding Portfolio
+# My Software Testing and Coding Portfoli
 
 Welcome to my Software Testing and Python Coding Portfolio! 🚀
 
