@@ -21,4 +21,5 @@ def random_quote():
     #    print(q.text.split("\n")[1].strip(), "-", q.text.split("\n")[5].strip())
     random_index = random.randint(0, len(div_quotes)-1)
 
-    return {div_quotes[random_index].text.split("\n")[5].strip() : div_quotes[random_index].text.split("\n")[1].strip()}
+    return { "author" : div_quotes[random_index].text.split("\n")[5].strip(),
+            "quote" : div_quotes[random_index].text.split("\n")[1].strip()}
