@@ -1,4 +1,13 @@
 /* footer always on bottom */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 100px;
+}
+
 footer {
   position: absolute;
   bottom: 0;
@@ -47,6 +56,17 @@ footer {
   width: 60%;
 }
 
+/* responsive table form */
+.responsive-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.responsive-table td {
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+}
+
 /* responsive layout */
 @media (max-width:800px){
         .row {
@@ -60,5 +80,17 @@ footer {
         }
         .right {
             width: 80%;
+        }
+        
+        .responsive-table,
+        .responsive-table tr,
+        .responsive-table td {
+          display: block;
+          width: 100%;
+        }
+
+        .responsive-table td {
+          border: none;
+          border-bottom: 1px solid #ccc;
         }
     }

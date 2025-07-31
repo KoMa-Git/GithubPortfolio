@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 import bcrypt
 import os
 import requests
+import random
 
 # initialize app, add secret key for session handling, session time limit, SQL server connection (use Render locally and memory for CI)
 app = Flask(__name__)
@@ -53,6 +54,19 @@ def auth_user():
 # lets get ready to rumble
 @app.route("/")
 def home():
+    articles = []
+    for i in range(5):
+        try: 
+            quote_url = "https://api.spaceflightnewsapi.net/v4/articles/" + str(random.randint(30000,32000))
+            response = requests.get(quote_url, timeout=3)
+            articles.append(response.json())
+        except:
+            continue
+    
+    return render_template("index.html", articles=articles)
+
+@app.route("/about")
+def about():
     quote_url = "https://fastapi-demo-iynq.onrender.com/get-a-quote"
     try: 
         response = requests.get(quote_url, timeout=3)
@@ -62,11 +76,7 @@ def home():
     except:
         author = "Oscar Wilde"
         quote = "“Be yourself; everyone else is already taken.”"
-    return render_template("index.html", author=author, quote=quote)
-
-@app.route("/about")
-def about():
-    return render_template("about.html")
+    return render_template("about.html", author=author, quote=quote)
 
 # this page is only for testing purpose, write out all records from table
 @app.route("/view")

@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 {% block title%}Homepage{% endblock %}
 {% block content %}
-<div style="text-align: center;">
-    <h2>{{author}}</h2>
-    <h2>-</h2>
-    <h2>{{quote}}</h2>
-    <p>And now count:</p>
-    {% for x in range(10,-1,-1): %}
-        {{x}}<br>
-    {% endfor %}
-</div>
+<h1 style="text-align: center;">Great news from outer space</h1>
+<table class="responsive-table">
+  {% for article in articles: %}
+  <tr>
+    <td><image src={{article["image_url"]}} width="300"></image></td>
+    <td>
+      <h4>{{article["title"]}}</h4>
+      <div class="article">{{article["summary"]}}</div>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 {% endblock %}
