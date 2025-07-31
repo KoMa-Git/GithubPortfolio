@@ -56,13 +56,12 @@ def auth_user():
 def home():
     articles = []
     for i in range(5):
+        quote_url = "https://api.spaceflightnewsapi.net/v4/articles/" + str(random.randint(30000,32000))
         try: 
-            quote_url = "https://api.spaceflightnewsapi.net/v4/articles/" + str(random.randint(30000,32000))
             response = requests.get(quote_url, timeout=3)
-            articles.append(response.json())
         except:
             continue
-    
+        articles.append(response.json())
     return render_template("index.html", articles=articles)
 
 @app.route("/about")
