@@ -54,9 +54,15 @@ def auth_user():
 @app.route("/")
 def home():
     quote_url = "https://fastapi-demo-iynq.onrender.com/get-a-quote"
-    response = requests.get(quote_url)
-    quote = response.json()
-    return render_template("index.html", author=quote["author"], quote=quote["quote"])
+    try: 
+        response = requests.get(quote_url, timeout=3)
+        quote = response.json()
+        author = quote["author"]
+        quote = quote["quote"]
+    except:
+        author = "Oscar Wilde"
+        quote = "“Be yourself; everyone else is already taken.”"
+    return render_template("index.html", author=author, quote=quote)
 
 @app.route("/about")
 def about():
