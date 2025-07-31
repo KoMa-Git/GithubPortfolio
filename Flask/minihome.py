@@ -52,6 +52,7 @@ def auth_user():
 # lets get ready to rumble
 @app.route("/")
 def home():
+    print(os.environ["REMOTE_ADDR"])
     return render_template("index.html")
 
 @app.route("/about")
