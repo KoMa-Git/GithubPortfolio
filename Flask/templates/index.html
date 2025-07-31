@@ -2,7 +2,9 @@
 {% block title%}Homepage{% endblock %}
 {% block content %}
 <div style="text-align: center;">
-    <h1>This is a noice homepage</h1>
+    <h2>{{author}}</h2>
+    <h2>-</h2>
+    <h2>{{quote}}</h2>
     <p>And now count:</p>
     {% for x in range(10,-1,-1): %}
         {{x}}<br>

@@ -3,6 +3,7 @@ from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
 import bcrypt
 import os
+import requests
 
 # initialize app, add secret key for session handling, session time limit, SQL server connection (use Render locally and memory for CI)
 app = Flask(__name__)
@@ -52,8 +53,10 @@ def auth_user():
 # lets get ready to rumble
 @app.route("/")
 def home():
-    print(os.environ["REMOTE_ADDR"])
-    return render_template("index.html")
+    quote_url = "https://fastapi-demo-iynq.onrender.com/get-a-quote"
+    response = requests.get(quote_url)
+    quote = response.json()
+    return render_template("index.html", author=quote["author"], quote=quote["quote"])
 
 @app.route("/about")
 def about():
