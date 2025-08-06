@@ -17,7 +17,16 @@ permissions:
 jobs:
   test-and-report:
     runs-on: ubuntu-latest
+    
+    services:
+      chrome:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
 
+    env:
+      BASE_URL: http://127.0.0.1:5000
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -39,6 +48,11 @@ jobs:
         sudo mv allure-2.27.0 /opt/allure
         sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
         allure --version
+
+    - name: Start Flask app in background
+      run: |
+        nohup python minihome.py > flask.log 2>&1 &
+        sleep 5  # wait for app to start
 
     - name: Run tests and generate new allure-results
       continue-on-error: true
