@@ -55,7 +55,7 @@ jobs:
     - name: Run tests and generate new allure-results
       continue-on-error: true
       run: |
-        pytest Flask/ --alluredir=Flask/allure-results
+        pytest Flask/tests --alluredir=Flask/allure-results
 
     - name: Download and inject previous history from gh-pages
       run: |
