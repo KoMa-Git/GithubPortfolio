@@ -74,10 +74,10 @@ def test_change_name(driver):
     test_login(driver)
 
     with allure.step("Change Name on User Page"):
-        wait_and_click(driver, By.NAME, "chng_nm")
+        wait_and_click(driver, By.NAME, "chng_nm_btn")
         wait_for(driver, By.NAME, "nm").clear()
         wait_for(driver, By.NAME, "nm").send_keys("New Name")
-        wait_and_click(driver, By.NAME, "chng_nm")
+        wait_and_click(driver, By.NAME, "chng_nm_btn")
 
     with allure.step("Verify Name Changed"):
         time.sleep(1)
