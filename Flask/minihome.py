@@ -224,6 +224,7 @@ def user():
                 session.pop("user", None)
                 session.pop("email", None)
                 session.pop("auth", None)
+                flash(f"Account deleted","info")
                 return render_template("index.html")        
             else:
                 # if DELETE confirmation fail then throw info
