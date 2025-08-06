@@ -127,9 +127,9 @@ def test_delete_account(driver):
     test_login(driver)
 
     with allure.step("Delete Account with 'DELETE' confirmation"):
-        wait_and_click(driver, By.NAME, "delete_acc_btn")
+        wait_and_click(driver, By.NAME, "del_acc_btn")
         wait_for(driver, By.NAME, "del").send_keys("DELETE")
-        wait_and_click(driver, By.NAME, "delete_acc_btn")
+        wait_and_click(driver, By.NAME, "del_acc_btn")
 
     with allure.step("Verify Account Deleted"):
         time.sleep(1)
