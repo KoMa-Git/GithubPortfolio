@@ -21,11 +21,11 @@
     <form method="post" id="pass">
       <p><input type="hidden" placeholder="old password" id="old_pass" name="old_pass"/></p>
       <p><input type="hidden" placeholder="new password" id="new_pass" name="new_pass"/></p>
-      <p><button class="btn btn-secondary" type="button" onclick="change_pass()">Change password</button></p>
+      <p><button class="btn btn-secondary" type="button" name="change_pass_btn" onclick="change_pass()">Change password</button></p>
     </form>
     <form method="post" id="del_acc">
       <p><input type="hidden" placeholder="type DELETE and click" id="del" name="del"/></p>
-      <p><button class="btn btn-secondary" type="button" onclick="del_acc()">Delete account</button></p>
+      <p><button class="btn btn-secondary" name="del_acc_btn" type="button" onclick="del_acc()">Delete account</button></p>
     </form>
   </div>
   <script>
