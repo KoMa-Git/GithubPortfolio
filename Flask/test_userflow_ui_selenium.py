@@ -116,6 +116,10 @@ def test_change_password(driver):
         wait_for(driver, By.NAME, "old_pass").send_keys("newpass123")
         wait_for(driver, By.NAME, "new_pass").send_keys(TEST_PASSWORD)
         wait_and_click(driver, By.NAME, "change_pass_btn")
+        
+        time.sleep(1)
+        body_text = driver.page_source
+        assert "Password has changed" in body_text
 
 @allure.severity(Severity.CRITICAL)
 @allure.title("Delete User Account")
