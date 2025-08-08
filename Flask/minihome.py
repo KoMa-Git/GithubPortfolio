@@ -4,7 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from extensions import db
 from db_tools.users import User, verify_password, add_user, get_password_hash
 from db_tools.products import Product, get_all_products
-from seed.load_products import load_products
+#from seed.load_products import load_products
+from setup import setup_app
 import os
 import requests
 import random
@@ -18,6 +19,8 @@ app.permanent_session_lifetime = timedelta(minutes=5)
 
 # initalize db 
 db.init_app(app)
+
+setup_app()
 
 # add the auth variable automatically to render templates 
 @app.context_processor
@@ -213,9 +216,9 @@ def logout():
 
 if __name__ == "__main__":
     # at the beginning create table if it doesn't exist already
-    with app.app_context():
+    """ with app.app_context():
         db.create_all()
         if not Product.query.all():
             load_products(os.path.join(os.path.dirname(__file__), 'seed', 'products.csv'))
-    # can use debug=True at development, then restart server automatically when save changes in code
-    app.run()
+     """# can use debug=True at development, then restart server automatically when save changes in code
+    app.run(debug=True)
