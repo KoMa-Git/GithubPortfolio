@@ -87,7 +87,7 @@ jobs:
         rm -rf $TEMP_DIR
 
     - name: Upload allure-results folder as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: allure-results-artifact
         path: Flask/allure-results
