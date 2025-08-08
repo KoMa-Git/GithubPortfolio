@@ -1,5 +1,6 @@
 import pytest
-from minihome import app, db, users, get_password_hash
+from minihome import app, db
+from db_tools.users import User, get_password_hash
 from flask import session
 
 @pytest.fixture
