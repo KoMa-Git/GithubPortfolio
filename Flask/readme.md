@@ -12,6 +12,8 @@ https://githubportfolio.onrender.com
 - Test results will deploy on GitHub Pages with help of Allure. Check it out at: https://koma-git.github.io/GithubPortfolio/
 - Automate tests made with Selenium, screenshot on fails, check allure report on the link above
 
+## Update:
+- ideas coming all the time, so it's evolving...add a basic webshop to the page with products, cart and checkout function. It gives more test object and more complex test cases.
 
 ## In progress... :
 - Automate tests made with Playwright
