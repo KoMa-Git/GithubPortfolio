@@ -9,15 +9,15 @@ import os
 import requests
 import random
 
+# initalize db 
+db.init_app(app)
+
 # initialize app, add secret key for session handling, session time limit, SQL server connection (use Render locally and memory for CI)
 app = Flask(__name__)
 app.secret_key = "somethingkrixkrax"
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('RENDER_SQL','sqlite:///:memory:')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.permanent_session_lifetime = timedelta(minutes=5)
-
-# initalize db 
-db.init_app(app)
 
 # add the auth variable automatically to render templates 
 @app.context_processor
