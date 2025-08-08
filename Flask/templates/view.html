@@ -1,16 +1,31 @@
 {%extends "base.html" %}
 {% block title %}View all users{% endblock %}
 {% block content %}
-  {% for item in values %}
+<h1>Users:</h1>
+  {% for user in users %}
     <div class="row">
       <div class="column left">
-        <strong>Name:</strong> {{item.name}}
+        <strong>Name:</strong> {{user.name}}
       </div>
       <div class="column middle">
-        <strong>Email:</strong> {{item.email}}
+        <strong>Email:</strong> {{user.email}}
       </div>
       <div class="column right">
-        <strong>Password:</strong> {{item.password}}
+        <strong>Password:</strong> {{user.password}}
+      </div>
+    </div>
+  {% endfor %}
+<h1>Products:</h1>
+  {% for product in products %}
+    <div class="row">
+      <div class="column left">
+        <strong>Name:</strong> {{product.name}}
+      </div>
+      <div class="column middle">
+        <strong>Price:</strong> {{product.price}}
+      </div>
+      <div class="column right">
+        <strong>Image:</strong> {{product.image}}
       </div>
     </div>
   {% endfor %}

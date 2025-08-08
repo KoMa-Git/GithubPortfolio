@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title%}About{% endblock %}
+{% block content %}
+<table class="responsive-table">
+  {% for product in products %}
+    <tr>
+      <td><image src="{{ url_for('static', filename='images/products/' + product.image) }}"" width="300"></image></td>
+      <td>
+        <h4>{{product.name}}</h4>
+        <div class="article">{{product.description}}</div>
+        <p><strong>Price: {{product.price}} €</strong></p>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

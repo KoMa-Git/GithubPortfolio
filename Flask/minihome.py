@@ -1,7 +1,10 @@
 from flask import Flask, redirect, url_for, render_template, request, session, flash
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
-import bcrypt
+from extensions import db
+from db_tools.users import User, verify_password, add_user, get_password_hash
+from db_tools.products import Product, get_all_products
+from seed.load_products import load_products
 import os
 import requests
 import random
@@ -13,35 +16,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('RENDER_SQL','sqlite:///:
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.permanent_session_lifetime = timedelta(minutes=5)
 
-# create db
-db = SQLAlchemy(app)
-
-# create model for users. (Could use table as well, probably that would be better for this basic app.)
-class users(db.Model):
-    _id = db.Column("id", db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    email = db.Column(db.String(100))
-    password = db.Column(db.String)
-
-    def __init__(self, name, email, password):
-        self.name = name
-        self.email = email
-        self.password = password
-
-# make a hashed password with Bcrypt. Keep as a string and not a byte for learning 
-def get_password_hash(password):
-    hashed_pwd = bcrypt.hashpw(bytes(password, "utf-8"), bcrypt.gensalt())
-    return str(hashed_pwd)[2:-1]
-
-# verify password, extended version in case if user created directly in SQL database and password form is not hashed
-def verify_password(plain_password, hashed_password):
-    try:
-        if bcrypt.checkpw(bytes(plain_password, "utf-8"), bytes(hashed_password, "utf-8")):
-            return True
-        else:
-            return False
-    except:
-        return False
+# initalize db 
+db.init_app(app)
 
 # add the auth variable automatically to render templates 
 @app.context_processor
@@ -64,23 +40,15 @@ def home():
         articles.append(response.json())
     return render_template("index.html", articles=articles)
 
-@app.route("/about")
-def about():
-    quote_url = "https://fastapi-demo-iynq.onrender.com/get-a-quote"
-    try: 
-        response = requests.get(quote_url, timeout=3)
-        quote = response.json()
-        author = quote["author"]
-        quote = quote["quote"]
-    except:
-        author = "Oscar Wilde"
-        quote = "“Be yourself; everyone else is already taken.”"
-    return render_template("about.html", author=author, quote=quote)
+@app.route("/products")
+def products():
+    products = Product.query.all()
+    return render_template("products.html", products=products)
 
 # this page is only for testing purpose, write out all records from table
 @app.route("/view")
 def view():
-    return render_template("view.html", values=users.query.all())
+    return render_template("view.html", users=User.query.all(), products=Product.query.all())
 
 @app.route("/login", methods=["POST","GET"])
 def login():
@@ -92,7 +60,7 @@ def login():
         pwd = request.form["pwd"]
 
         # check database contains given email
-        found_user = users.query.filter_by(email=email).first()
+        found_user = User.query.filter_by(email=email).first()
         
         if found_user:
         
@@ -146,7 +114,7 @@ def register():
         
         else:
             # check if email is already in database
-            found_user = users.query.filter_by(email=email).first()
+            found_user = User.query.filter_by(email=email).first()
             
             if found_user:
                 # throw info email address is already registerd
@@ -156,10 +124,7 @@ def register():
             
             else:
                 # create a record to Model and add it to the database
-                new_user = users(name, email, get_password_hash(password))
-                db.session.add(new_user)
-                db.session.commit()
-
+                add_user(name, email, password)
                 flash("Registered successfully! Please login.", "info")
                 return redirect(url_for("login"))
 
@@ -181,7 +146,7 @@ def user():
         #store some session data and the user, identified by email as unique data
         name = session["user"]
         email = session["email"]
-        user = users.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
         
         # if user change his name on page
         if request.method == "POST" and "nm" in request.form:
@@ -250,5 +215,7 @@ if __name__ == "__main__":
     # at the beginning create table if it doesn't exist already
     with app.app_context():
         db.create_all()
+        if not Product.query.all():
+            load_products(os.path.join(os.path.dirname(__file__), 'seed', 'products.csv'))
     # can use debug=True at development, then restart server automatically when save changes in code
     app.run()
