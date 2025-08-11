@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title%}Cart{% endblock %}
+{% block content %}
+{% if cart %}
+    <h2>Your Cart</h2>
+    <table class="center responsive-table">
+        {% for pid, item in cart.items() %}
+        <tr class="cart-item" id="row-{{ pid }}">
+            <td>
+                <img src="{{ url_for('static', filename='images/products/' + item.image) }}" class="cart-img" alt="{{item.name}}">
+            </td>
+            <td>{{ item.name }}</td>
+
+            <td class="cart-quantity">
+                <button class="btn btn-success" onclick="updateCart('{{ pid }}', 'decrease')">-</button>
+                <input
+                    type="text"
+                    inputmode="numeric"
+                    id="qty-input-{{ pid }}"
+                    value="{{ item.quantity }}"
+                    maxlength="4"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                    data-product-id="{{ pid }}"
+                    class ="qty-input"
+                    style="border: none; outline: none;"
+                >
+                <button class="btn btn-success" onclick="updateCart('{{ pid }}', 'increase')">+</button>
+                </span>
+            </td>
+
+            <td id="total-{{ pid }}" class="total-line">
+                {{ (item.price * item.quantity) | round(2) }} €
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td><strong>Total:</strong></td>
+            <td id="end-total"><strong></strong></td>
+        </tr>
+    </table>
+    <div class="center">
+        <button type="button" class="btn btn-success" onclick="products()">Continue shopping</button>
+        <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
+    </div>
+{% else %}
+    <h2>Your Cart is empty</h2>
+{% endif %}
+<script src="{{ url_for('static', filename='js/cart.js') }}" ></script>
+<script>updateTotal();</script>
+{% endblock %}

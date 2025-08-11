@@ -1,18 +1,19 @@
-from flask import Flask, redirect, url_for, render_template, request, session, flash
+from flask import Flask, redirect, url_for, render_template, request, session, flash, jsonify
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
 from extensions import db
 from db_tools.users import User, verify_password, add_user, get_password_hash
-from db_tools.products import Product, get_all_products
+from db_tools.products import Product, get_product_by_id
 from seed.load_products import load_products
 import os
 import requests
 import random
 
 # initialize app, add secret key for session handling, session time limit, SQL server connection (use Render locally and memory for CI)
+# important note about session in session_decode.py
 app = Flask(__name__)
 app.secret_key = "somethingkrixkrax"
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('RENDER_SQL','sqlite:///:memory:')
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("RENDER_SQL","sqlite:///:memory:")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.permanent_session_lifetime = timedelta(minutes=5)
 
@@ -23,7 +24,7 @@ db.init_app(app)
 @app.context_processor
 def auth_user(): 
     if "auth" in session:
-            return dict(auth=True)
+        return dict(auth=True)
     else:
         return dict(auth=False)
 
@@ -45,7 +46,116 @@ def products():
     products = Product.query.all()
     return render_template("products.html", products=products)
 
-# this page is only for testing purpose, write out all records from table
+# keep updated badge anytime when refresh or redirect to other page
+@app.context_processor
+def cart_total():
+    return dict(total_items_in_cart=get_cart_item_count())
+
+def get_cart_item_count():
+    cart = session.get("cart", {})
+    return sum(item["quantity"] for item in cart.values())
+
+# add to cart function with JS and AJAX
+@app.route("/add_to_cart", methods=["POST"])
+def add_to_cart():
+    data = request.get_json()
+    product_id = data.get("product_id")
+
+    product = get_product_by_id(product_id)
+    if not product:
+        return jsonify({"status":"error", "message":"Product not found"}), 404
+
+    cart = session.get("cart", {})
+
+    # If product already in cart, increase quantity
+    if str(product_id) in cart:
+        cart[str(product_id)]["quantity"] += 1
+    else:
+        cart[str(product_id)] = {
+            "image": product.image,
+            "name": product.name,
+            "price": product.price,
+            "quantity": 1
+        }
+
+    session["cart"] = cart
+    return jsonify({
+        "status":"success",
+        "message": f"Added {product.name} to cart",
+        "cartItemCount": sum(item["quantity"] for item in cart.values())
+    })
+
+# use JS and AJAX to update cart
+@app.route("/update_cart", methods=["POST"])
+def update_cart():
+    data = request.get_json()
+    product_id = data.get("product_id")
+    action = data.get("action")
+    quantity = data.get("quantity")  # Optional, for "set"
+
+    if not product_id or not action:
+        return jsonify({"status": "error", "message": "Invalid request"}), 400
+
+    cart = session.get("cart", None)
+    product_key = str(product_id)
+
+    if product_key not in cart:
+        return jsonify({"status": "error", "message": "Product not in cart"}), 404
+
+    if action == "increase":
+        cart[product_key]["quantity"] += 1
+
+    elif action == "decrease":
+        cart[product_key]["quantity"] -= 1
+        if cart[product_key]["quantity"] <= 0:
+            del cart[product_key]
+            session["cart"] = cart
+            return jsonify({
+                "status": "success",
+                "message": "Product removed from cart",
+                "cart": cart,
+                "cartItemCount": sum(item["quantity"] for item in cart.values())
+            })
+
+    elif action == "set":
+        try:
+            qty = int(quantity)
+            if qty <= 0:
+                del cart[product_key]
+                message = "Product removed from cart"
+            else:
+                cart[product_key]["quantity"] = qty
+                message = f"Updated quantity to {qty}"
+        except (ValueError, TypeError):
+            return jsonify({"status": "error", "message": "Invalid quantity"}), 400
+    else:
+        return jsonify({"status": "error", "message": "Unknown action"}), 400
+
+    session["cart"] = cart
+
+    return jsonify({
+        "status": "success",
+        "message": "Cart updated",
+        "cart": cart,
+        "cartItemCount": sum(item["quantity"] for item in cart.values())
+    })
+
+# cart page
+@app.route("/cart")
+def cart():
+    cart = session.get("cart", None)
+    return render_template("cart.html", cart=session["cart"])
+
+# minimal checkout, save order in db
+@app.route("/checkout")
+def checkout():
+    user = session.get("user", "Client")
+    cart = session.get("cart", None)
+    if cart:
+        session.pop("cart")
+    return render_template("checkout.html", user=user)
+
+# this page is only for testing purpose, write out all records from tables
 @app.route("/view")
 def view():
     return render_template("view.html", users=User.query.all(), products=Product.query.all())
@@ -203,19 +313,26 @@ def user():
     
 @app.route("/logout")
 def logout():
-    # inform user logout were successful
-    flash("You logged out successfully!", "info")
-    # and clear all session data
-    session.pop("user", None)
-    session.pop("email", None)
-    session.pop("auth", None)
-    return redirect(url_for("login"))
+    if "auth" in session:
+        # clear all session data
+        session.pop("user", None)
+        session.pop("email", None)
+        session.pop("auth", None)
+        cart = session.get("cart", None)
+        if cart:
+            session.pop("cart", None)
+        # inform user logout were successful
+        flash("You logged out successfully!", "info")
+        return redirect(url_for("login"))
+    else:
+        flash("You were not logged in!", "info")
+        return redirect(url_for("login"))
 
 if __name__ == "__main__":
     # at the beginning create table if it doesn't exist already
     with app.app_context():
         db.create_all()
         if not Product.query.all():
-            load_products(os.path.join(os.path.dirname(__file__), 'seed', 'products.csv'))
+            load_products(os.path.join(os.path.dirname(__file__), "seed", "products.csv"))
     # can use debug=True at development, then restart server automatically when save changes in code
     app.run(debug=True)

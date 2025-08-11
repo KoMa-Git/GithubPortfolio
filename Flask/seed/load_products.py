@@ -3,7 +3,7 @@ from db_tools.products import Product
 from extensions import db
 
 def load_products(csv_path):
-    print("Loading seed products into in-memory DB...")
+    print("Loading seed products into DB...")
     with open(csv_path, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:

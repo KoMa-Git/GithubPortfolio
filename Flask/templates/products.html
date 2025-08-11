@@ -1,16 +1,20 @@
 {% extends "base.html" %}
-{% block title%}About{% endblock %}
+{% block title%}Products{% endblock %}
 {% block content %}
-<table class="responsive-table">
+<div class="row row-cols-1 row-cols-md-3 g-4">
   {% for product in products %}
-    <tr>
-      <td><image src="{{ url_for('static', filename='images/products/' + product.image) }}"" width="300"></image></td>
-      <td>
-        <h4>{{product.name}}</h4>
-        <div class="article">{{product.description}}</div>
+  <div class="col">
+    <div class="card">
+      <img src="{{ url_for('static', filename='images/products/' + product.image) }}" class="card-img-top" alt="{{product.name}}">
+      <div class="card-body">
+        <h5 class="card-title">{{product.name}}</h5>
+        <p class="card-text">{{product.description}}</p>
         <p><strong>Price: {{product.price}} €</strong></p>
-      </td>
-    </tr>
+        <button type="button" onclick="addToCart('{{ product.id }}')" class="btn btn-outline-success">Add to Cart</button>
+      </div>
+    </div>
+  </div>  
   {% endfor %}
-</table>
+</div>
+<script src="{{ url_for('static', filename='js/cart.js') }}" ></script>
 {% endblock %}

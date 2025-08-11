@@ -4,10 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <link href="{{ url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/style.css')}}" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-vinyl-fill" viewBox="0 0 16 16">
@@ -27,19 +27,24 @@
               <a class="nav-link" href="/products">Products</a>
             </li>
           </ul>
+          <button type="button" class="btn btn-success position-relative" onclick="cart()" style="margin-right: 20px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">
+              <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+            </svg>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-count">
+              {{ total_items_in_cart }}
+            </span>
+          </button>
           {% if auth %}  
-          <button type="button" class="btn btn-outline-secondary div-btn" onclick="user()">
+          <button type="button" class="btn btn-outline-success div-btn" onclick="user()">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
               <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"></path>
               <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"></path>
             </svg>
           </button>
-          <script>function user() { location.href = "/user" }</script>
           <button class="btn btn-outline-success" type="submit" onclick="logout()">Logout</button>
-          <script>function logout() { location.href = "/logout" }</script>
           {% else %}
-          <button class="btn btn-outline-success" type="submit" onclick="redirect()">Login</button>
-          <script>function redirect() { location.href = "/login" }</script>
+          <button class="btn btn-outline-success" type="submit" onclick="login()">Login</button>
           {% endif %}
         </div>
       </div>
@@ -71,6 +76,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" ></script>
   </body>
   <footer>
     <p style="text-align: center;">Footer with a &#128099; and thats visible everywhere</p>
