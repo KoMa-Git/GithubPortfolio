@@ -7,13 +7,14 @@ You can check deployed page thanks to Render.com on the following link:
 https://githubportfolio.onrender.com
 
 ## Ready:
-- microsite simulating a login, register and user settings with a live database connection. Passwords keep hashed in db of course. Minimal html and css handling with Bootstrap, just to don't hurt our eyes.
+- microsite simulating a login, register and user settings with a live database connection. Passwords keep hashed in db of course. Minimal html and css handling with Bootstrap, just to don't hurt our eyes. # look update #
 - Unit and other functional tests made with pytest
 - Test results will deploy on GitHub Pages with help of Allure. Check it out at: https://koma-git.github.io/GithubPortfolio/
 - Automate tests made with Selenium, screenshot on fails, check allure report on the link above
 
 ## Update:
 - ideas coming all the time, so it's evolving...add a basic webshop to the page with products, cart and checkout function. It gives more test object and more complex test cases.
+- seed with partially ai generated dummy data, login credentials could find in /seed folder users.csv
 
 ## In progress... :
 - Automate tests made with Playwright

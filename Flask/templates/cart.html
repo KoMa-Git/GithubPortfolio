@@ -2,7 +2,9 @@
 {% block title%}Cart{% endblock %}
 {% block content %}
 {% if cart %}
-    <h2>Your Cart</h2>
+    <div class="center">
+        <h2>Cart</h2>
+    </div>
     <table class="center responsive-table">
         {% for pid, item in cart.items() %}
         <tr class="cart-item" id="row-{{ pid }}">
@@ -40,12 +42,17 @@
             <td id="end-total"><strong></strong></td>
         </tr>
     </table>
-    <div class="center">
-        <button type="button" class="btn btn-success" onclick="products()">Continue shopping</button>
-        <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
+    <div class="center" style="display: block ruby;">
+        <button type="button" class="btn btn-outline-success" onclick="products()">Continue shopping</button>
+        <form action="{{ url_for('checkout') }}" method="POST">
+            <!-- form elements here -->
+        <input type="submit" class="btn btn-success" value="Checkout">
+        </form>
     </div>
 {% else %}
-    <h2>Your Cart is empty</h2>
+    <div class="center">
+        <h2>Cart is empty</h2>
+    </div>
 {% endif %}
 <script src="{{ url_for('static', filename='js/cart.js') }}" ></script>
 <script>updateTotal();</script>

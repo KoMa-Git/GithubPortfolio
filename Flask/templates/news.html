@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title%}Homepage{% endblock %}
+{% block title%}News{% endblock %}
 {% block content %}
 <h1 style="text-align: center;">Great news from outer space</h1>
 <table class="responsive-table">
   {% for article in articles: %}
   <tr>
-    <td><image src={{article["image_url"]}} width="300"></image></td>
+    <td class="article-img-td"><image class="article-img" src={{article["image_url"]}}></image></td>
     <td>
       <h4>{{article["title"]}}</h4>
       <div class="article">{{article["summary"]}}</div>

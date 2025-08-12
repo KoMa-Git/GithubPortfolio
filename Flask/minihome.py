@@ -4,7 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from extensions import db
 from db_tools.users import User, verify_password, add_user, get_password_hash
 from db_tools.products import Product, get_product_by_id
-from seed.load_products import load_products
+from db_tools.orders import Order, OrderItem
+from seed.load_data import load_products, load_users, load_order
 import os
 import requests
 import random
@@ -13,7 +14,7 @@ import random
 # important note about session in session_decode.py
 app = Flask(__name__)
 app.secret_key = "somethingkrixkrax"
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("RENDER_SQL","sqlite:///:memory:")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("RENDER_SQL", "sqlite:///:memory:")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.permanent_session_lifetime = timedelta(minutes=5)
 
@@ -29,18 +30,24 @@ def auth_user():
         return dict(auth=False)
 
 # lets get ready to rumble
-@app.route("/")
-def home():
+@app.route("/news")
+def news():
     articles = []
     for i in range(5):
         quote_url = "https://api.spaceflightnewsapi.net/v4/articles/" + str(random.randint(30000,32000))
         try: 
             response = requests.get(quote_url, timeout=3)
-        except:
+        except requests.exceptions.Timeout:
+            continue
+        except requests.exceptions.RequestException as e:
+            continue
+        if "detail" in response.json():
             continue
         articles.append(response.json())
-    return render_template("index.html", articles=articles)
+    print(articles)
+    return render_template("news.html", articles=articles)
 
+@app.route("/")
 @app.route("/products")
 def products():
     products = Product.query.all()
@@ -144,21 +151,70 @@ def update_cart():
 @app.route("/cart")
 def cart():
     cart = session.get("cart", None)
-    return render_template("cart.html", cart=session["cart"])
+    return render_template("cart.html", cart=cart)
 
 # minimal checkout, save order in db
-@app.route("/checkout")
+@app.route("/checkout", methods=["POST"])
 def checkout():
-    user = session.get("user", "Client")
     cart = session.get("cart", None)
-    if cart:
-        session.pop("cart")
+    
+    # handle if arrive to here with empty hands
+    if not cart:
+        flash("Your cart is empty", "info")
+        return redirect(url_for("products"))
+    
+    total_amount = 0
+    order_items_data = []
+    email = session.get("email", None)
+    found_user = User.query.filter_by(email=email).first()
+    
+    # First collect data for Order
+    for product_id, cart_item in cart.items():
+        product = db.session.get(Product, product_id)
+        # skip not valid products
+        if not product:
+            continue
+        
+        quantity = cart_item["quantity"]
+        subtotal = product.price * quantity
+
+        # append this item to the list
+        order_items_data.append((product, quantity, subtotal))
+
+        total_amount += subtotal
+
+    # create Order object from these data
+    order = Order(user_id=found_user.id if found_user else None,
+                  total_amount=total_amount)
+    
+    # add order to session
+    db.session.add(order)
+    db.session.commit() 
+
+    # Then add ordered items to OrderItem
+    for product, quantity, subtotal in order_items_data:
+        order_item = OrderItem(
+            order_id = order.id,
+            product_id = product.id,
+            quantity = quantity,
+            price = product.price,
+            subtotal = subtotal
+        )
+        db.session.add(order_item)
+    
+    db.session.commit()
+
+    user = session.get("user", "Client")
+    print(session["cart"])
+    session.pop("cart")
     return render_template("checkout.html", user=user)
 
 # this page is only for testing purpose, write out all records from tables
 @app.route("/view")
 def view():
-    return render_template("view.html", users=User.query.all(), products=Product.query.all())
+    orders = db.session.query(Order, User.name).join(User, isouter=True) # outer join to list anonym orders as well
+    ordered_items = OrderItem.query.all()
+    return render_template("view.html", users=User.query.all(), products=Product.query.all(), orders=orders, ordered_items=ordered_items)
 
 @app.route("/login", methods=["POST","GET"])
 def login():
@@ -244,7 +300,7 @@ def register():
         # if session is alive 
         if "auth" in session:
             flash("You couldn't register if you are logged in", "info")
-            return render_template("index.html")
+            return render_template("products.html")
         
         else:
             return render_template("register.html")
@@ -257,6 +313,7 @@ def user():
         name = session["user"]
         email = session["email"]
         user = User.query.filter_by(email=email).first()
+        
         
         # if user change his name on page
         if request.method == "POST" and "nm" in request.form:
@@ -300,12 +357,19 @@ def user():
                 session.pop("email", None)
                 session.pop("auth", None)
                 flash(f"Account deleted","info")
-                return redirect(url_for("home"))        
+                return redirect(url_for("products"))        
             else:
                 # if DELETE confirmation fail then throw info
                 flash(f"You didn't type DELETE correctly","info")
 
-        return render_template("user.html", name=name, email=email)
+        # prevoius orders 
+        orders = db.session.query(Order).filter_by(user_id=user.id)
+        order_items = db.session.query(OrderItem, Product.name).join(Product)
+        print(order_items)
+        # order_items = OrderItem.query.all() 
+        # db.session.query(Order, User.name).join(User, isouter=True)
+        
+        return render_template("user.html", name=name, email=email, orders=list(orders), order_items=order_items)
     
     else:
         flash("You are not logged in!", "info")
@@ -334,5 +398,9 @@ if __name__ == "__main__":
         db.create_all()
         if not Product.query.all():
             load_products(os.path.join(os.path.dirname(__file__), "seed", "products.csv"))
-    # can use debug=True at development, then restart server automatically when save changes in code
+            load_users(os.path.join(os.path.dirname(__file__), "seed", "users.csv"))
+            load_order({'3': {'image': 'rocket_brush.jpg', 'name': 'Rocket-Powered Toothbrush', 'price': 12.99, 'quantity': 1}, '4': {'image': 'cat_helmet.jpg', 'name': 'Galactic Cat Helmet', 'price': 19.95, 'quantity': 4}})
+            load_order({'1': {'image': 'zero_g_coffee.jpg', 'name': 'Zero-G Coffee', 'price': 3.99, 'quantity': 1}, '2': {'image': 'alien_snack.jpg', 'name': 'Alien Snack Pack', 'price': 5.49, 'quantity': 1}, '3': {'image': 'rocket_brush.jpg', 'name': 'Rocket-Powered Toothbrush', 'price': 12.99, 'quantity': 1}})
+        # can use debug=True at development, then restart server automatically when save changes in code
+    
     app.run(debug=True)

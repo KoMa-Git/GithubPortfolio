@@ -1,7 +1,12 @@
 {%extends "base.html" %}
 {% block title %}View all users{% endblock %}
 {% block content %}
-<h1>Users:</h1>
+<div class="view-element">
+  <button class="btn btn-secondary center" type="button" data-bs-toggle="collapse" data-bs-target="#users" aria-expanded="false" aria-controls="collapseExample">
+    Users
+  </button>
+</div>
+<div class="collapse" id="users">
   {% for user in users %}
     <div class="row">
       <div class="column left">
@@ -15,7 +20,13 @@
       </div>
     </div>
   {% endfor %}
-<h1>Products:</h1>
+</div>
+<div class="view-element">
+  <button class="btn btn-secondary center" type="button" data-bs-toggle="collapse" data-bs-target="#products" aria-expanded="false" aria-controls="collapseExample">
+    Products
+  </button>
+</div>
+<div class="collapse" id="products">  
   {% for product in products %}
     <div class="row">
       <div class="column left">
@@ -29,4 +40,45 @@
       </div>
     </div>
   {% endfor %}
+</div>
+<div class="view-element">
+  <button class="btn btn-secondary center" type="button" data-bs-toggle="collapse" data-bs-target="#orders" aria-expanded="false" aria-controls="collapseExample">
+    Orders
+  </button>
+</div>
+<div class="collapse" id="orders">
+  {% for order,name in orders %}
+    <div class="row">
+      <div class="column left">
+        <strong>User:</strong> {{name}}
+      </div>
+      <div class="column middle">
+        <strong>Date:</strong> {{order.order_date}}
+      </div>
+      <div class="column right">
+        <strong>Total:</strong> {{order.total_amount}} €
+      </div>
+    </div>
+  {% endfor %}
+</div>
+<div class="view-element">
+  <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#orderItems" aria-expanded="false" aria-controls="collapseExample">
+    Order items
+  </button>
+</div>
+<div class="collapse" id="orderItems">
+  {% for item in ordered_items %}
+    <div class="row">
+      <div class="column left">
+        <strong>Product id:</strong> {{item.product_id}}
+      </div>
+      <div class="column middle">
+        <strong>Quantity:</strong> {{item.quantity}}
+      </div>
+      <div class="column right">
+        <strong>Price:</strong> {{item.price}} €
+      </div>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

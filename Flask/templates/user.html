@@ -28,36 +28,21 @@
       <p><button class="btn btn-secondary" name="del_acc_btn" type="button" onclick="del_acc()">Delete account</button></p>
     </form>
   </div>
-  <script>
-    function change_name() {
-      var x = document.getElementById("nm");
-      if (x.type === "hidden") {
-        x.type = "text";
-        document.getElementById("stg").style.display = "none";
-      } else {
-        x.type = "hidden";
-        document.getElementById("stg").style.display = "inline";
-        document.getElementById("name").submit();
-      }
-    }
-    function change_pass() {
-      if (document.getElementById("old_pass").type === "hidden") {
-        document.getElementById("old_pass").type = "text";
-        document.getElementById("new_pass").type = "text";
-      } else {
-        document.getElementById("old_pass").type = "hidden";
-        document.getElementById("new_pass").type = "hidden";
-        document.getElementById("pass").submit();
-      }        
-    }
-    function del_acc() {
-      if (document.getElementById("del").type === "hidden") {
-        document.getElementById("del").type = "text";
-      } else {
-        document.getElementById("del").type = "hidden";
-        document.getElementById("del_acc").submit();
-      }
-    }
-  </script>
 </div>
+<div>
+  {% if orders|length %}
+    <h3>Previous orders:</h3>
+    {% for order in orders %}
+      <div><strong>Order id: {{order.id}} - Order date: {{order.order_date}} - Total amount: {{order.total_amount}} €</strong></div>
+      <ul>
+      {% for order_item, name in order_items %}
+        {% if order_item.order_id == order.id %}
+          <li>{{name}} - {{order_item.quantity}} pc(s) - {{order_item.price}} €/pc - {{order_item.subtotal}} €</li>
+        {% endif %}
+      {% endfor %}
+      </ul>
+    {% endfor %}
+  {% endif %}
+</div>
+<script src="{{ url_for('static', filename='js/user.js') }}" ></script>
 {% endblock %}
