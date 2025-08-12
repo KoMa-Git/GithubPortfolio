@@ -213,7 +213,7 @@ def checkout():
 @app.route("/view")
 def view():
     orders = db.session.query(Order, User.name).join(User, isouter=True) # outer join to list anonym orders as well
-    ordered_items = OrderItem.query.all()
+    ordered_items = db.session.query(OrderItem, Product.name).join(Product)
     return render_template("view.html", users=User.query.all(), products=Product.query.all(), orders=orders, ordered_items=ordered_items)
 
 @app.route("/login", methods=["POST","GET"])
@@ -365,9 +365,6 @@ def user():
         # prevoius orders 
         orders = db.session.query(Order).filter_by(user_id=user.id)
         order_items = db.session.query(OrderItem, Product.name).join(Product)
-        print(order_items)
-        # order_items = OrderItem.query.all() 
-        # db.session.query(Order, User.name).join(User, isouter=True)
         
         return render_template("user.html", name=name, email=email, orders=list(orders), order_items=order_items)
     

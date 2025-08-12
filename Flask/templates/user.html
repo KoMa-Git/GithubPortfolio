@@ -27,21 +27,34 @@
       <p><input type="hidden" placeholder="type DELETE and click" id="del" name="del"/></p>
       <p><button class="btn btn-secondary" name="del_acc_btn" type="button" onclick="del_acc()">Delete account</button></p>
     </form>
+    {% if orders|length %}
+    <div class="view-element">
+      <button class="btn btn-secondary center" type="button" data-bs-toggle="collapse" data-bs-target="#orders" aria-expanded="false" aria-controls="collapseExample">
+        Previous orders
+      </button>
+    </div>
   </div>
 </div>
-<div>
-  {% if orders|length %}
-    <h3>Previous orders:</h3>
+<div class="usr-prev-ord">
+  <div class="collapse" id="orders">
     {% for order in orders %}
-      <div><strong>Order id: {{order.id}} - Order date: {{order.order_date}} - Total amount: {{order.total_amount}} €</strong></div>
-      <ul>
-      {% for order_item, name in order_items %}
-        {% if order_item.order_id == order.id %}
-          <li>{{name}} - {{order_item.quantity}} pc(s) - {{order_item.price}} €/pc - {{order_item.subtotal}} €</li>
-        {% endif %}
-      {% endfor %}
-      </ul>
+      <div style="padding-bottom: 10px;">
+        <button class="btn btn-secondary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" type="button" data-bs-toggle="collapse" data-bs-target="#order-{{order.id}}" aria-expanded="false" aria-controls="collapseExample">
+        +
+        </button>
+        <strong>Order id:</strong> {{order.id}} - <strong>Date:</strong> {{order.order_date}} - <strong>Total:</strong> {{order.total_amount}} €
+      </div>
+      <div class="collapse" id="order-{{order.id}}">
+        <ul>
+          {% for item,name in order_items %}
+            {% if item.order_id == order.id %}
+              <li style="margin-left: 3em;">{{name}} - {{item.quantity}} pc(s) - {{item.price}} €/pc</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
     {% endfor %}
+  </div>
   {% endif %}
 </div>
 <script src="{{ url_for('static', filename='js/user.js') }}" ></script>

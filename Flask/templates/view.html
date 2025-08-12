@@ -48,36 +48,20 @@
 </div>
 <div class="collapse" id="orders">
   {% for order,name in orders %}
-    <div class="row">
-      <div class="column left">
-        <strong>User:</strong> {{name}}
-      </div>
-      <div class="column middle">
-        <strong>Date:</strong> {{order.order_date}}
-      </div>
-      <div class="column right">
-        <strong>Total:</strong> {{order.total_amount}} €
-      </div>
+    <div style="padding-bottom: 10px;">
+      <button class="btn btn-secondary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" type="button" data-bs-toggle="collapse" data-bs-target="#order-{{order.id}}" aria-expanded="false" aria-controls="collapseExample">
+      +
+      </button>
+      <strong>Order id:</strong> {{order.id}} - <strong>User:</strong> {{name}} - <strong>Date:</strong> {{order.order_date}} - <strong>Total:</strong> {{order.total_amount}} €
     </div>
-  {% endfor %}
-</div>
-<div class="view-element">
-  <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#orderItems" aria-expanded="false" aria-controls="collapseExample">
-    Order items
-  </button>
-</div>
-<div class="collapse" id="orderItems">
-  {% for item in ordered_items %}
-    <div class="row">
-      <div class="column left">
-        <strong>Product id:</strong> {{item.product_id}}
-      </div>
-      <div class="column middle">
-        <strong>Quantity:</strong> {{item.quantity}}
-      </div>
-      <div class="column right">
-        <strong>Price:</strong> {{item.price}} €
-      </div>
+    <div class="collapse" id="order-{{order.id}}">
+      <ul>
+        {% for item,name in ordered_items %}
+          {% if item.order_id == order.id %}
+            <li style="margin-left: 3em;">{{name}} - {{item.quantity}} pc(s) - {{item.price}} €/pc</li>
+          {% endif %}
+        {% endfor %}
+      </ul>
     </div>
   {% endfor %}
 </div>
