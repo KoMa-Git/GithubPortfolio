@@ -1,0 +1,27 @@
+name: Run Postman tests with Newman on Node.js CI
+
+on:
+#  push:
+#    paths:
+#      - 'FastAPI/**'
+#      - '!FastAPI/readme.md'
+#  pull_request:
+#    paths:
+#      - 'FastAPI/**'
+#      - '!FastAPI/readme.md'
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: Install Newman
+      run: npm install -g newman
