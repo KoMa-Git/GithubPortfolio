@@ -25,3 +25,5 @@ jobs:
         node-version: '20'
     - name: Install Newman
       run: npm install -g newman
+    - name: Run tests
+      run: newman run FastAPI/tests/postman_collection.json
