@@ -3,12 +3,12 @@ name: Run Postman tests with Newman on Node.js CI
 on:
 #  push:
 #    paths:
-#      - 'Flask/**'
-#      - '!Flask/readme.md'
+#      - 'FastAPI/**'
+#      - '!FastAPI/readme.md'
 #  pull_request:
 #    paths:
-#      - 'Flask/**'
-#      - '!Flask/readme.md'
+#      - 'FastAPI/**'
+#      - '!FastAPI/readme.md'
   workflow_dispatch:
 
 jobs:
@@ -23,11 +23,5 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-    - name: Run init
-      run: npm init
-    - name: Install dependencies
-      run: npm install
-    - name: Run tests
-      run: npm test
     - name: Install Newman
       run: npm install -g newman
