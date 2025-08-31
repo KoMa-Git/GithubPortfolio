@@ -16,9 +16,17 @@ Instead of relying on pre-built APIs, this project allowed me to experiment and 
 You can check deployed FastAPI docs page thanks to Render.com on the following link:
 https://fastapi-demo-iynq.onrender.com/docs
 
+## Ready :
+
+- API tests with Postman, collection report by Newman deployed on github pages.
+    Report: https://koma-git.github.io/GithubPortfolio/API-report/
+    Postman collection: https://www.postman.com/tancsikr-4884/portfolio
+
+
 ## In progress... :
 
-- Postman collections for easy API testing in near future.
+- More test in Postman collection
+- JMeter performance tests, report
 
 
 ## 🛠 Skills

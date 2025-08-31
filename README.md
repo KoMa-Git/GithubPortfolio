@@ -32,8 +32,9 @@ Here are some of the key areas of expertise I have been developing:
 
 This repository contains simpler pet projects in separate folder that shows my testing and coding skills :
 
-- **Flask** : build a mini homepage for test automation, learning backend-frontend connections
-- **FastAPI** : building a demo API for testing in Postman
+- **[Flask](/Flask)** : build a mini homepage for test automation, learning backend-frontend connections
+- **[FastAPI](/FastAPI/)** : building a demo API for testing in Postman
+- **Reports** : https://koma-git.github.io/GithubPortfolio/
 
 ## Let's Connect
 

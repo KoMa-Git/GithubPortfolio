@@ -1,16 +1,16 @@
-name: full CI
+name: Generate and deploy test reports on full porfolio CI
 
 on:
-#  push:
-#    branches:
-#      - main
-#    paths:
-#      - 'Flask/**'
-#      - 'FastAPI/**'
-   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Flask/tests/**'
+      - 'FastAPI/tests/**'
+  workflow_dispatch:
 jobs:
   Flask-tests:
-    #if: contains(github.event.head_commit.message, 'Flask') || contains(join(github.event.commits.*.modified, ','), 'Flask/')
+    if: contains(github.event.head_commit.message, 'Flask') || contains(join(github.event.commits.*.modified, ','), 'Flask/')
     runs-on: ubuntu-latest
 
     services:
@@ -84,6 +84,12 @@ jobs:
         cd ..
         rm -rf $TEMP_DIR    
 
+    - name: Upload allure-results folder as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-results-artifact
+        path: Flask/allure-results
+
     - name: Generate allure report with history
       run: |
         allure generate Flask/allure-results -o Flask/allure-report --clean
@@ -97,7 +103,7 @@ jobs:
           keep_files: true   # <- preserves API report
 
   FastAPI-tests:
-    #if: contains(github.event.head_commit.message, 'FastAPI') || contains(join(github.event.commits.*.modified, ','), 'FastAPI/')
+    if: contains(github.event.head_commit.message, 'FastAPI') || contains(join(github.event.commits.*.modified, ','), 'FastAPI/')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -120,10 +126,10 @@ jobs:
           newman run postman_collection.json \
             -r htmlextra --reporter-htmlextra-export ./report/index.html
 
-      - name: Upload allure-results folder as artifact
+      - name: Upload htmlextra report folder as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: htmlextra-results-artifact
+          name: htmlextra-artifact
           path: FastAPI/tests/report
 
       - name: Deploy API report
@@ -131,5 +137,5 @@ jobs:
         with:
           github_token: ${{ secrets.GH_PAT }}
           publish_dir: ./FastAPI/tests/report
-          destination_dir: Api
+          destination_dir: API-report
           keep_files: true   # <- preserves Flask report
