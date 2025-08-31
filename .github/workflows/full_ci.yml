@@ -1,0 +1,126 @@
+name: full CI
+
+on:
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - 'Flask/**'
+#      - 'FastAPI/**'
+   workflow_dispatch:
+jobs:
+  Flask-tests:
+    if: contains(github.event.head_commit.message, 'Flask') || contains(join(github.event.commits.*.modified, ','), 'Flask/')
+    runs-on: ubuntu-latest
+
+    services:
+      chrome:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
+
+    env:
+      BASE_URL: http://127.0.0.1:5000
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r Flask/requirements.txt
+        pip install allure-pytest
+
+    - name: Install Allure CLI
+      run: |
+        wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+        tar -xzf allure-2.27.0.tgz
+        sudo mv allure-2.27.0 /opt/allure
+        sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+        allure --version
+
+    - name: Start Flask app in background
+      run: |
+        nohup python Flask/minihome.py > flask.log 2>&1 &
+        sleep 5  # wait for app to start
+
+    - name: Run tests and generate new allure-results
+      continue-on-error: true
+      run: |
+        pytest Flask/tests --alluredir=Flask/allure-results
+
+    - name: Download and inject previous history from gh-pages
+      run: |
+        # Setup paths
+        RESULTS_DIR=Flask/allure-results
+        TEMP_DIR=gh-temp
+        HISTORY_DIR=history
+
+        # Prepare temp working dir
+        mkdir -p $TEMP_DIR
+        cd $TEMP_DIR
+
+        # Fetch only gh-pages branch into isolated repo
+        git init -q
+        git remote add origin https://github.com/${{ github.repository }}.git
+        git fetch origin gh-pages --depth=1
+        git checkout origin/gh-pages
+        # cd Flask?
+        # Copy history if it exists
+        if [ -d "$HISTORY_DIR" ]; then
+          cp -r $HISTORY_DIR ../$RESULTS_DIR/
+          echo "✅ Injected previous history into $RESULTS_DIR/"
+        else
+          echo "⚠️ No history directory found in gh-pages"
+        fi
+
+        # Cleanup
+        cd ..
+        rm -rf $TEMP_DIR    
+
+    - name: Generate allure report with history
+      run: |
+        allure generate Flask/allure-results -o Flask/allure-report --clean
+
+    - name: Deploy Flask report
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+          github_token: ${{ secrets.GH_PAT }}
+          publish_dir: ./Flask/allure-report
+          destination_dir: Flask
+          keep_files: true   # <- preserves API report
+
+  FastAPI-tests:
+    if: contains(github.event.head_commit.message, 'FastAPI') || contains(join(github.event.commits.*.modified, ','), 'FastAPI/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run API tests
+        run: |
+          cd FastAPI/tests
+          newman run postman_collection.json \
+            -r htmlextra --reporter-htmlextra-export ../FastAPI-report/index.html
+
+      - name: Deploy API report
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GH_PAT }}
+          publish_dir: ./FastAPI-report
+          destination_dir: api
+          keep_files: true   # <- preserves Flask report
