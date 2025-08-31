@@ -10,7 +10,7 @@ This repository contains simpler pet projects in separate folder that shows my t
 
 - **[Flask](/Flask)** : build a mini homepage for test automation, learning backend-frontend connections
 - **[FastAPI](/FastAPI/)** : building a demo API for testing in Postman
-- **Reports** : https://koma-git.github.io/GithubPortfolio/
+- **Test reports** : https://koma-git.github.io/GithubPortfolio/
 
 ## About Me
 
