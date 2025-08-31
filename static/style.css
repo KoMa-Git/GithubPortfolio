@@ -29,6 +29,9 @@ li {
 }
 
 a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
     color: #525252;
     font-size: 18px;
@@ -36,4 +39,9 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+.projects_img {
+    width: 200px;
+    margin-right: 10px;
 }
