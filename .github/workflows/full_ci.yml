@@ -118,12 +118,18 @@ jobs:
         run: |
           cd FastAPI/tests
           newman run postman_collection.json \
-            -r htmlextra --reporter-htmlextra-export ../FastAPI-report/index.html
+            -r htmlextra --reporter-htmlextra-export ./report/index.html
+
+      - name: Upload allure-results folder as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: htmlextra-results-artifact
+          path: FastAPI/tests/report
 
       - name: Deploy API report
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GH_PAT }}
-          publish_dir: ./FastAPI-report
+          publish_dir: ./FastAPI/tests/report
           destination_dir: Api
           keep_files: true   # <- preserves Flask report
