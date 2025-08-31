@@ -60,7 +60,7 @@ jobs:
         # Setup paths
         RESULTS_DIR=Flask/allure-results
         TEMP_DIR=gh-temp
-        HISTORY_DIR=history
+        HISTORY_DIR=Flask/history
 
         # Prepare temp working dir
         mkdir -p $TEMP_DIR
@@ -108,9 +108,11 @@ jobs:
         with:
           node-version: '20'
       
-      - name: Install Newman
-        run: npm install -g newman
-
+      - name: Install Newman and reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+      
       - name: Run API tests
         run: |
           cd FastAPI/tests
