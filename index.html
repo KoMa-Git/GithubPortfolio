@@ -4,17 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Test Reports</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}">
 </head>
 <body>
-    <div>
-    <h1>Test reports for portfolio projects</h1>
-    </div>
-    <div>
-    <ul>
-        <li><a href="https://koma-git.github.io/GithubPortfolio/Flask" target="_blank">Flask app - Allure Test Report</a></li>
-        <li><a href="https://koma-git.github.io/GithubPortfolio/api" target="_blank">FastAPI - Newman Test Report</a></li>
-    </ul>
+    <div class="container">
+        <h1>Test reports for portfolio projects</h1>
+        <ul>
+            <li><a href="https://koma-git.github.io/GithubPortfolio/Flask" target="_blank">Flask app - Allure Test Report</a></li>
+            <li><a href="https://koma-git.github.io/GithubPortfolio/api" target="_blank">FastAPI - Newman Test Report</a></li>
+        </ul>
     </div>
 </body>
 </html>
