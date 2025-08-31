@@ -4,6 +4,14 @@ Welcome to my Software Testing and Python Coding Portfolio! 🚀
 
 This repository showcases my ongoing journey in the world of software testing and coding. It is a constantly evolving space where I demonstrate my skills, share knowledge, and document my learning as I grow in the field of software testing.
 
+## Portfolio Contents
+
+This repository contains simpler pet projects in separate folder that shows my testing and coding skills :
+
+- **[Flask](/Flask)** : build a mini homepage for test automation, learning backend-frontend connections
+- **[FastAPI](/FastAPI/)** : building a demo API for testing in Postman
+- **Reports** : https://koma-git.github.io/GithubPortfolio/
+
 ## About Me
 
 I am a passionate aspiring software tester with a deep interest in ensuring quality and improving the user experience. I believe that testing is not just about finding bugs—it's about creating the foundation for robust and reliable software that users can trust. 
@@ -27,14 +35,6 @@ Here are some of the key areas of expertise I have been developing:
 - **Risk-Based Testing**: Prioritize tests based on potential risk to the product’s success.
 - **Collaboration**: I believe in close collaboration with developers, product managers, and other stakeholders to ensure the software meets all requirements.
 - **Continuous Learning**: I constantly seek opportunities to learn new testing strategies, tools, and industry trends to stay ahead in the field.
-
-## Portfolio Contents
-
-This repository contains simpler pet projects in separate folder that shows my testing and coding skills :
-
-- **[Flask](/Flask)** : build a mini homepage for test automation, learning backend-frontend connections
-- **[FastAPI](/FastAPI/)** : building a demo API for testing in Postman
-- **Reports** : https://koma-git.github.io/GithubPortfolio/
 
 ## Let's Connect
 
