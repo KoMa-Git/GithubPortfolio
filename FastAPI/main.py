@@ -8,11 +8,6 @@ from scrape import *
 from sql import *
 
 # add table to the database
-class users(SQLModel, table=True):
-    id : int | None = Field(default=None, primary_key=True)
-    name : str = Field(index=True)
-    email : str
-
 class employee(SQLModel, table=True):
     employee_id: int | None = Field(default=None, primary_key=True)
     full_name: str = Field(index=True)
@@ -58,12 +53,24 @@ async def lifespan(app:FastAPI):
     # code before yield runs before webserver start
     yield
 
+# add metadata to openapi tags
+tags_metadata = [
+    {
+        "name": "raw SQL with psycopg2",
+        "description": "SQL operations with direct queries to PostgreSQL database",
+    },
+    {
+        "name": "ORM with sqlmodel",
+        "description": "SQL operations with ORM to PostgreSQL database",
+    },
+]
+
 # start the app
 app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"status": "ok"}
 
 @app.get("/calculate")
 def get_result_query(x: float, y: float, operator: str = Query(None, title="Operator", description="It could be plus/minus/multiply/divide")):
@@ -103,28 +110,28 @@ def get_a_quote():
     return random_quote()
 
 # Following imported functions are little SQL demo through a freely deployed PostrgerSQL on render.com uses psycopg2
-@app.get("/read_database")
+@app.get("/read_database", tags=["raw SQL with psycopg2"])
 def read_sql_db():
     return read_data()
 
-@app.post("/insert_into_database")
+@app.post("/insert_into_database", tags=["raw SQL with psycopg2"])
 def insert_into_sql_db(name: str = Query(None, title="Name", description="Add the new employee name"),
                   age: int = Query(None, title="Age", description="Add the age of the new employee"),
                   position: str = Query(None, title="position", description="Add the position of the new employee")):
     return insert_data(name,age,position)
 
-@app.post("/delete_from_database")
+@app.post("/delete_from_database", tags=["raw SQL with psycopg2"])
 def delete_from_sql_db(id: int = Query(None, title="ID", description="Add the id of the employee")):
     return delete_data(id)
 
 # Following uses sqlmodel more clear version of db handling
 
-@app.get("/view")
+@app.get("/view", tags=["ORM with sqlmodel"])
 def read_it(session: SessionDep): #-> list[users]:
     usrs = session.exec(select(employee)).all()
     return usrs
 
-@app.post("/employee", response_model=public_employee)
+@app.post("/employee", response_model=public_employee, tags=["ORM with sqlmodel"])
 def add_employee(emp: create_employee, session: SessionDep):
     db_emp = employee.model_validate(emp)
     session.add(db_emp)
@@ -132,7 +139,7 @@ def add_employee(emp: create_employee, session: SessionDep):
     session.refresh(db_emp)
     return db_emp
 
-@app.patch("/employee/{id}", response_model=public_employee)
+@app.patch("/employee/{id}", response_model=public_employee, tags=["ORM with sqlmodel"])
 def udt_employee(id, emp:update_employee, session: SessionDep):
     db_emp = session.get(employee, id)
     if not db_emp:
@@ -144,7 +151,7 @@ def udt_employee(id, emp:update_employee, session: SessionDep):
     session.refresh(db_emp)
     return db_emp
 
-@app.delete("/employee/{id}")
+@app.delete("/employee/{id}", tags=["ORM with sqlmodel"])
 def del_employee(id, session: SessionDep):
     emp = session.get(employee, id)
     if not emp:
