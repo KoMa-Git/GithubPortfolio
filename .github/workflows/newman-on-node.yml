@@ -27,5 +27,4 @@ jobs:
       run: npm install -g newman
     - name: Run tests
       continue-on-error: true
-      run: newman run FastAPI/tests/postman_collection.json \
-            -r htmlextra --reporter-htmlextra-export ./report/index.html
+      run: newman run FastAPI/tests/postman_collection.json
