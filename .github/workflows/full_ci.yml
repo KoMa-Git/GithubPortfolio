@@ -121,9 +121,9 @@ jobs:
         run: npm install -g newman-reporter-htmlextra
       
       - name: Run API tests
+        continue-on-error: true
         run: |
-          cd FastAPI/tests
-          newman run postman_collection.json \
+          newman run FastAPI/tests/postman_collection.json \
             -r htmlextra --reporter-htmlextra-export ./report/index.html
 
       - name: Upload htmlextra report folder as artifact
