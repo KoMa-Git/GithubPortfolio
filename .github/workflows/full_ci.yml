@@ -122,8 +122,10 @@ jobs:
       
       - name: Run API tests
         continue-on-error: true
-        run: newman run FastAPI/tests/postman_collection.json \
-            -r htmlextra --reporter-htmlextra-export ./report/index.html
+        run: |
+          cd FastAPI/tests
+          newman run postman_collection.json \
+          -r htmlextra --reporter-htmlextra-export ./report/index.html
 
       - name: Upload htmlextra report folder as artifact
         uses: actions/upload-artifact@v4
