@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 jobs:
   Flask-tests:
-    if: contains(github.event.head_commit.message, 'Flask') || contains(join(github.event.commits.*.modified, ','), 'Flask/tests/')
+    #if: contains(github.event.head_commit.message, 'Flask') || contains(join(github.event.commits.*.modified, ','), 'Flask/tests/')
     runs-on: ubuntu-latest
 
     services:
@@ -103,7 +103,7 @@ jobs:
           keep_files: true   # <- preserves API report
 
   FastAPI-tests:
-    if: contains(github.event.head_commit.message, 'FastAPI') || contains(join(github.event.commits.*.modified, ','), 'FastAPI/tests/')
+    #if: contains(github.event.head_commit.message, 'FastAPI') || contains(join(github.event.commits.*.modified, ','), 'FastAPI/tests/')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
