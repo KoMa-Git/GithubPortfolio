@@ -1,6 +1,5 @@
 from flask import Flask, redirect, url_for, render_template, request, session, flash, jsonify
 from datetime import timedelta
-from flask_sqlalchemy import SQLAlchemy
 from extensions import db
 from db_tools.users import User, verify_password, add_user, get_password_hash
 from db_tools.products import Product, get_product_by_id

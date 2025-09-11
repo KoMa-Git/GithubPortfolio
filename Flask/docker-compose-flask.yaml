@@ -1,0 +1,26 @@
+# As the main code written to use memory if RENDER_SQL environment variable is missing its not neccessary to
+# pull postgres to run. Postgres just added to use local volume to keep data persistance in case if need
+
+services:
+  my-app:
+    image: komadckr/flask-app:1.0
+    ports:
+      - 8000:8000
+    environment:
+      - RENDER_SQL=postgresql://admin:password@flask-postgresdb-1/flaskdb
+    depends_on:
+      - postgresdb
+  postgresdb:
+    image: postgres:17-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=flaskdb
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:
+    driver: local

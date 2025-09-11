@@ -1,14 +1,14 @@
 name: Run tests on Flask app and publish Allure report with history
 
 on:
-#  push:
-#    paths:
-#      - 'Flask/**'
-#      - '!Flask/readme.md'
-#  pull_request:
-#    paths:
-#      - 'Flask/**'
-#      - '!Flask/readme.md'
+  push:
+    paths:
+      - 'Flask/tests/**'
+      - '!Flask/tests/readme.md'
+  pull_request:
+    paths:
+      - 'Flask/tests/**'
+      - '!Flask/tests/readme.md'
   workflow_dispatch:
 
 jobs:
@@ -36,8 +36,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r Flask/requirements.txt
-        pip install allure-pytest
+        pip install -r Flask/requirements-test.txt
 
     - name: Install Allure CLI
       run: |
@@ -62,7 +61,7 @@ jobs:
         # Setup paths
         RESULTS_DIR=Flask/allure-results
         TEMP_DIR=gh-temp
-        HISTORY_DIR=history
+        HISTORY_DIR=Flask/history
 
         # Prepare temp working dir
         mkdir -p $TEMP_DIR
@@ -102,4 +101,6 @@ jobs:
         github_token: ${{ secrets.GH_PAT }}
         publish_dir: ./Flask/allure-report
         publish_branch: gh-pages
-        force_orphan: true
+        destination_dir: Flask
+        keep_files: true   # <- preserves API report
+        

@@ -1,14 +1,14 @@
-name: Run Postman tests with Newman on Node.js CI
+name: Run Postman tests with Newman and publish
 
 on:
-#  push:
-#    paths:
-#      - 'FastAPI/**'
-#      - '!FastAPI/readme.md'
-#  pull_request:
-#    paths:
-#      - 'FastAPI/**'
-#      - '!FastAPI/readme.md'
+  push:
+    paths:
+      - 'FastAPI/tests/**'
+      - '!FastAPI/tests/readme.md'
+  pull_request:
+    paths:
+      - 'FastAPI/tests/**'
+      - '!FastAPI/tests/readme.md'
   workflow_dispatch:
 
 jobs:
@@ -19,12 +19,35 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+    
     - name: Install Newman
       run: npm install -g newman
-    - name: Run tests
+    
+    - name: Install html reporter  
+        run: npm install -g newman-reporter-htmlextra
+
+    - name: Run API tests
       continue-on-error: true
-      run: newman run FastAPI/tests/postman_collection.json
+      run: |
+        cd FastAPI/tests
+        newman run postman_collection.json \
+        -r htmlextra --reporter-htmlextra-export ./report/index.html
+
+    - name: Upload htmlextra report folder as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: htmlextra-artifact
+        path: FastAPI/tests/report
+
+    - name: Deploy API report to GitHub pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GH_PAT }}
+        publish_dir: ./FastAPI/tests/report
+        destination_dir: API-report
+        keep_files: true   # <- preserves Flask report

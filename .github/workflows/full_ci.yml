@@ -1,12 +1,12 @@
 name: Generate and deploy test reports on full porfolio CI
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'Flask/tests/**'
-      - 'FastAPI/tests/**'
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - 'Flask/tests/**'
+#      - 'FastAPI/tests/**'
   workflow_dispatch:
 jobs:
   Flask-tests:
@@ -34,7 +34,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r Flask/requirements.txt
+        pip install -r Flask/requirements-test.txt
         pip install allure-pytest
 
     - name: Install Allure CLI
