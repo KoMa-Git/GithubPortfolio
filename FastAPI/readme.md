@@ -20,6 +20,7 @@ https://fastapi-demo-iynq.onrender.com/docs
 - API tests with Postman, collection report by Newman deployed on github pages.
 
 Report: https://koma-git.github.io/GithubPortfolio/API-report/
+
 Postman collection: https://www.postman.com/tancsikr-4884/portfolio
 
 
