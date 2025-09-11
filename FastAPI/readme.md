@@ -1,4 +1,3 @@
-
 # FastAPI learning project
 
 I got tired of searching for free APIs to experiment with, so I decided to create my own. Building this FastAPI app has been a great way to learn how APIs work in real life. Not only did I get to explore FastAPI's capabilities, but I also gained hands-on experience with API development and testing.
@@ -19,15 +18,16 @@ https://fastapi-demo-iynq.onrender.com/docs
 ## Ready :
 
 - API tests with Postman, collection report by Newman deployed on github pages.
-    Report: https://koma-git.github.io/GithubPortfolio/API-report/
-    Postman collection: https://www.postman.com/tancsikr-4884/portfolio
+
+Report: https://koma-git.github.io/GithubPortfolio/API-report/
+Postman collection: https://www.postman.com/tancsikr-4884/portfolio
 
 
 ## In progress... :
 
 - More test in Postman collection
 - JMeter performance tests, report
-
+- Jenkins and containerization
 
 ## 🛠 Skills
 Python, SQL
