@@ -8,13 +8,13 @@ This repository showcases my ongoing journey in the world of software testing an
 
 This repository contains simpler pet projects in separate folder that shows my testing and coding skills :
 
-- **[Flask](/Flask)** : build a mini homepage for test automation, learning backend-frontend connections
-- **[FastAPI](/FastAPI/)** : building a demo API for testing in Postman
+- **[Flask](/Flask)** : build a mini webshop for test automation, filled with AI generated data, learning backend-frontend connections
+- **[FastAPI](/FastAPI/)** : build a demo API for testing in Postman
 - **Test reports** : https://koma-git.github.io/GithubPortfolio/
 
 ## About Me
 
-I am a passionate aspiring software tester with a deep interest in ensuring quality and improving the user experience. I believe that testing is not just about finding bugs—it's about creating the foundation for robust and reliable software that users can trust. 
+I am a passionate and aspiring software tester with coding skills and a strong interest in ensuring quality and enhancing user experience. I have a keen eye for detail but never lose sight of the bigger picture.For me, testing isn’t just about finding bugs—though I do enjoy digging deep to uncover the root cause of an issue—it's about building a solid foundation for reliable, user-centered software that people can trust.
 
 This portfolio reflects my dedication to learning new testing methodologies, tools, coding and best practices, as well as my practical experience applying these skills in pet projects.
 
