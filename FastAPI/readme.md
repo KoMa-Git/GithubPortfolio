@@ -21,7 +21,7 @@ https://fastapi-demo-iynq.onrender.com/docs
 
 Report: https://koma-git.github.io/GithubPortfolio/API-report/
 
-Postman collection: https://www.postman.com/tancsikr-4884/portfolio
+Postman collection: https://www.postman.com/koma-4884/portfolio
 
 
 ## In progress... :
