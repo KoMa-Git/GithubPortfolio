@@ -1,0 +1,27 @@
+services:
+  my-app:
+    image: komadckr/fastapi-demo:1.0
+    ports:
+      - 8000:8000
+    environment:
+      - USER=admin
+      - PASSWORD=password
+      - HOST=fastapi-postgresdb-1
+      - DATABASE=fastapidb
+      - POSTGRESQL_URI=postgresql://admin:password@fastapi-postgresdb-1/fastapidb
+    depends_on:
+      - postgresdb
+  postgresdb:
+    image: postgres:17-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=fastapidb
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:
+    driver: local
