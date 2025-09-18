@@ -20,11 +20,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    
     - name: Install Newman
       run: npm install -g newman
     
@@ -35,7 +30,7 @@ jobs:
       continue-on-error: true
       run: |
         cd FastAPI/tests
-        newman run postman_collection.json \
+        newman run https://www.postman.com/collections/39842531-a8852f9a-fc51-406b-a8af-b7268582a4d7 \
         -r htmlextra --reporter-htmlextra-export ./report/index.html
 
     - name: Upload htmlextra report folder as artifact
