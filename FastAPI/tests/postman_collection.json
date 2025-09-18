@@ -4,7 +4,7 @@
 		"name": "FastAPI demo",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39842531",
-		"_collection_link": "https://www.postman.com/tancsikr-4884/portfolio/collection/e4wymmu/fastapi-demo?action=share&source=collection_link&creator=39842531"
+		"_collection_link": "https://www.postman.com/koma-4884/portfolio/collection/e4wymmu/fastapi-demo?action=share&source=collection_link&creator=39842531"
 	},
 	"item": [
 		{
@@ -207,7 +207,34 @@
 							"const id = pm.collectionVariables.get(\"employeeId\")\r",
 							"pm.test(\"Employee with required id exists\"), function () {\r",
 							"    pm.expect(response).to.have.key(id.toString())\r",
-							"}"
+							"}\r",
+							"\r",
+							"pm.test(\"response have valid JSON scheme\", function () {\r",
+							"    const schema = {\r",
+							"        'type':'object',\r",
+							"        'patternProperties': {\r",
+							"            '^[0-9]+$': {\r",
+							"                'type':'object',\r",
+							"                'properties': {\r",
+							"                    'name': {\r",
+							"                        'type':'string',\r",
+							"                        'pattern': '^[A-Z][a-z]+(?: [A-Z][a-z]+)*$'\r",
+							"                    },\r",
+							"                    'age': {\r",
+							"                        'type':'integer',\r",
+							"                        'minimum':18,\r",
+							"                        'maximum':65\r",
+							"                    },\r",
+							"                    'position': {\r",
+							"                        'type':'string'\r",
+							"                    },\r",
+							"                }\r",
+							"            }\r",
+							"\r",
+							"        }\r",
+							"    };\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -227,7 +254,85 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "List of employees SQL",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/read_database",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"read_database"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 18 Sep 2025 09:06:40 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "481"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "rndr-id",
+							"value": "0283c12d-567c-4b24"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "980fb04468a68e97-IAD"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "{\n    \"1\": {\n        \"name\": \"John Doe\",\n        \"age\": 30,\n        \"position\": \"CEO\"\n    },\n    \"13\": {\n        \"name\": \"Jeffery Farrell\",\n        \"age\": 47,\n        \"position\": \"Planner\"\n    },\n    \"67\": {\n        \"name\": \"Gary Klein\",\n        \"age\": 54,\n        \"position\": \"Planner\"\n    },\n    \"68\": {\n        \"name\": \"Dustin Conroy\",\n        \"age\": 54,\n        \"position\": \"Representative\"\n    },\n    \"69\": {\n        \"name\": \"Jacquelyn Satterfield\",\n        \"age\": 54,\n        \"position\": \"Executive\"\n    },\n    \"70\": {\n        \"name\": \"Don Lakin\",\n        \"age\": 54,\n        \"position\": \"Assistant\"\n    },\n    \"71\": {\n        \"name\": \"Traci Lueilwitz\",\n        \"age\": 54,\n        \"position\": \"Executive\"\n    },\n    \"72\": {\n        \"name\": \"Terry Green Iv\",\n        \"age\": 54,\n        \"position\": \"Engineer\"\n    },\n    \"73\": {\n        \"name\": \"Mr Roger Rutherford\",\n        \"age\": 54,\n        \"position\": \"Technician\"\n    },\n    \"74\": {\n        \"name\": \"Shawna Brekke\",\n        \"age\": 54,\n        \"position\": \"Supervisor\"\n    },\n    \"75\": {\n        \"name\": \"Tracy Von\",\n        \"age\": 54,\n        \"position\": \"Liaison\"\n    },\n    \"76\": {\n        \"name\": \"Jan Spinka\",\n        \"age\": 54,\n        \"position\": \"Agent\"\n    },\n    \"77\": {\n        \"name\": \"Marlon Wolff\",\n        \"age\": 54,\n        \"position\": \"Planner\"\n    },\n    \"78\": {\n        \"name\": \"Marlene Leffler\",\n        \"age\": 54,\n        \"position\": \"Manager\"\n    },\n    \"79\": {\n        \"name\": \"Willie Smith\",\n        \"age\": 54,\n        \"position\": \"Producer\"\n    },\n    \"80\": {\n        \"name\": \"Roberto Bailey\",\n        \"age\": 54,\n        \"position\": \"Officer\"\n    },\n    \"81\": {\n        \"name\": \"Cory Smith\",\n        \"age\": 54,\n        \"position\": \"Liaison\"\n    },\n    \"82\": {\n        \"name\": \"Lloyd Barton\",\n        \"age\": 54,\n        \"position\": \"Representative\"\n    },\n    \"83\": {\n        \"name\": \"Melanie Armstrong\",\n        \"age\": 54,\n        \"position\": \"Engineer\"\n    },\n    \"84\": {\n        \"name\": \"Ron Buckridge\",\n        \"age\": 54,\n        \"position\": \"Supervisor\"\n    },\n    \"85\": {\n        \"name\": \"Essie Hamill\",\n        \"age\": 54,\n        \"position\": \"Technician\"\n    },\n    \"86\": {\n        \"name\": \"Ernest Gerhold Dvm\",\n        \"age\": 54,\n        \"position\": \"Officer\"\n    },\n    \"87\": {\n        \"name\": \"Rosa Adams\",\n        \"age\": 54,\n        \"position\": \"Director\"\n    }\n}"
+				}
+			]
 		},
 		{
 			"name": "Add employee SQL",
@@ -363,10 +468,33 @@
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							"const response = pm.response.json();\r",
-							"\r",
-							"pm.test(\"All keys are exists according to docs\", function () {\r",
-							"    pm.expect(response[0]).to.have.keys(\"age\",\"position\",\"employee_id\",\"full_name\");\r",
+							"pm.test(\"Response schema is valid\", function () {\r",
+							"    const schema = {\r",
+							"        'type':'array',\r",
+							"        'items': {\r",
+							"            'type':'object',\r",
+							"            'properties': {\r",
+							"                'position':{\r",
+							"                    'type':'string'\r",
+							"                },\r",
+							"                'full_name':{\r",
+							"                    'type':'string',\r",
+							"                    'pattern':'^[A-Z][a-z]+(?: [A-Z][a-z]+)*$'\r",
+							"                },\r",
+							"                'age':{\r",
+							"                    'type':'number',\r",
+							"                    'minimum': 18,\r",
+							"                    'maximum': 65\r",
+							"                },\r",
+							"                'employee_id':{\r",
+							"                    'type':'number'\r",
+							"                }\r",
+							"            },\r",
+							"            'required':['position','full_name','age','employee_id'],\r",
+							"            'additionalProperties': false\r",
+							"        }\r",
+							"    };\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -376,8 +504,11 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"packages": {},
-						"type": "text/javascript"
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -394,7 +525,85 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "List of employee ORM",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/view",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"view"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 18 Sep 2025 09:07:37 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "492"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "rndr-id",
+							"value": "255040b4-ee49-4128"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "980fb1acf9898236-IAD"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "[\n    {\n        \"position\": \"CEO\",\n        \"full_name\": \"John Doe\",\n        \"age\": 30,\n        \"employee_id\": 1\n    },\n    {\n        \"position\": \"Planner\",\n        \"full_name\": \"Jeffery Farrell\",\n        \"age\": 47,\n        \"employee_id\": 13\n    },\n    {\n        \"position\": \"Planner\",\n        \"full_name\": \"Gary Klein\",\n        \"age\": 54,\n        \"employee_id\": 67\n    },\n    {\n        \"position\": \"Representative\",\n        \"full_name\": \"Dustin Conroy\",\n        \"age\": 54,\n        \"employee_id\": 68\n    },\n    {\n        \"position\": \"Executive\",\n        \"full_name\": \"Jacquelyn Satterfield\",\n        \"age\": 54,\n        \"employee_id\": 69\n    },\n    {\n        \"position\": \"Assistant\",\n        \"full_name\": \"Don Lakin\",\n        \"age\": 54,\n        \"employee_id\": 70\n    },\n    {\n        \"position\": \"Executive\",\n        \"full_name\": \"Traci Lueilwitz\",\n        \"age\": 54,\n        \"employee_id\": 71\n    },\n    {\n        \"position\": \"Engineer\",\n        \"full_name\": \"Terry Green Iv\",\n        \"age\": 54,\n        \"employee_id\": 72\n    },\n    {\n        \"position\": \"Technician\",\n        \"full_name\": \"Mr Roger Rutherford\",\n        \"age\": 54,\n        \"employee_id\": 73\n    },\n    {\n        \"position\": \"Supervisor\",\n        \"full_name\": \"Shawna Brekke\",\n        \"age\": 54,\n        \"employee_id\": 74\n    },\n    {\n        \"position\": \"Liaison\",\n        \"full_name\": \"Tracy Von\",\n        \"age\": 54,\n        \"employee_id\": 75\n    },\n    {\n        \"position\": \"Agent\",\n        \"full_name\": \"Jan Spinka\",\n        \"age\": 54,\n        \"employee_id\": 76\n    },\n    {\n        \"position\": \"Planner\",\n        \"full_name\": \"Marlon Wolff\",\n        \"age\": 54,\n        \"employee_id\": 77\n    },\n    {\n        \"position\": \"Manager\",\n        \"full_name\": \"Marlene Leffler\",\n        \"age\": 54,\n        \"employee_id\": 78\n    },\n    {\n        \"position\": \"Producer\",\n        \"full_name\": \"Willie Smith\",\n        \"age\": 54,\n        \"employee_id\": 79\n    },\n    {\n        \"position\": \"Officer\",\n        \"full_name\": \"Roberto Bailey\",\n        \"age\": 54,\n        \"employee_id\": 80\n    },\n    {\n        \"position\": \"Liaison\",\n        \"full_name\": \"Cory Smith\",\n        \"age\": 54,\n        \"employee_id\": 81\n    },\n    {\n        \"position\": \"Representative\",\n        \"full_name\": \"Lloyd Barton\",\n        \"age\": 54,\n        \"employee_id\": 82\n    },\n    {\n        \"position\": \"Engineer\",\n        \"full_name\": \"Melanie Armstrong\",\n        \"age\": 54,\n        \"employee_id\": 83\n    },\n    {\n        \"position\": \"Supervisor\",\n        \"full_name\": \"Ron Buckridge\",\n        \"age\": 54,\n        \"employee_id\": 84\n    },\n    {\n        \"position\": \"Technician\",\n        \"full_name\": \"Essie Hamill\",\n        \"age\": 54,\n        \"employee_id\": 85\n    },\n    {\n        \"position\": \"Officer\",\n        \"full_name\": \"Ernest Gerhold Dvm\",\n        \"age\": 54,\n        \"employee_id\": 86\n    },\n    {\n        \"position\": \"Director\",\n        \"full_name\": \"Rosa Adams\",\n        \"age\": 54,\n        \"employee_id\": 87\n    }\n]"
+				}
+			]
 		},
 		{
 			"name": "Add employee ORM",
@@ -411,9 +620,37 @@
 							"// set employeeId according to response for the further requests\r",
 							"pm.collectionVariables.set(\"employeeId\", response.employee_id);\r",
 							"\r",
-							"pm.test(\"Adding employee was successful\", function () {\r",
-							"    pm.expect(response).to.have.keys(\"employee_id\",\"full_name\",\"position\");\r",
-							"})"
+							"pm.test(\"Response JSON schema is valid, employee added\", function () {\r",
+							"    const schema = {\r",
+							"        'type':'object',\r",
+							"        'properties': {\r",
+							"            'employee_id': {\r",
+							"                'type':'integer'\r",
+							"            },\r",
+							"            'full_name': {\r",
+							"                'type':'string',\r",
+							"                'pattern': '^[A-Z][a-z]+(?: [A-Z][a-z]+)*$'\r",
+							"            },\r",
+							"            'position': {\r",
+							"                'type':'string'\r",
+							"            },\r",
+							"        },\r",
+							"        'required':['employee_id','full_name','position'],\r",
+							"        'additionalProperties': false\r",
+							"    };\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -442,7 +679,94 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Add employee ORM",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"full_name\": \"{{$randomFullName}}\",\r\n    \"age\": {{employeeAge}},\r\n    \"position\": \"{{$randomJobType}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/employee",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"employee"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 18 Sep 2025 10:27:19 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "65"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "rndr-id",
+							"value": "d22240c8-0b0d-4de0"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "9810263d0a45d68f-IAD"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "{\n    \"employee_id\": 90,\n    \"full_name\": \"June Durgan\",\n    \"position\": \"Manager\"\n}"
+				}
+			]
 		},
 		{
 			"name": "Update employee data ORM",
@@ -458,10 +782,41 @@
 							"const response = pm.response.json();\r",
 							"\r",
 							"pm.test(\"Updated successfully\", function () {\r",
-							"    pm.expect(response).to.have.any.keys(\"full_name\",\"position\");\r",
-							"    pm.expect(response.full_name).is.eql(\"John Doe\");\r",
-							"    pm.expect(response.position).is.eql(\"Bingo Manager\");\r",
-							"})"
+							"    pm.expect(response).to.have.keys(\"employee_id\",\"full_name\",\"position\");\r",
+							"    pm.expect(response.full_name).to.eql(pm.collectionVariables.get('patchedName'));\r",
+							"    pm.expect(response.position).to.eql(pm.collectionVariables.get('patchedPosition'));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"response JSON schema is valid\", function () {\r",
+							"    const schema = {\r",
+							"        'type':'object',\r",
+							"        'properties': {\r",
+							"            'employee_id': {\r",
+							"                'type':'integer'\r",
+							"            },\r",
+							"            'full_name': {\r",
+							"                'type':'string'\r",
+							"            },\r",
+							"            'position': {\r",
+							"                'type':'string'\r",
+							"            },\r",
+							"        },\r",
+							"        'required':['employee_id','full_name','position'],\r",
+							"        'additionalProperties': false\r",
+							"    };\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set('patchedName', 'John Doe');\r",
+							"pm.collectionVariables.set('patchedPosition','Bingo Manager');"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -473,7 +828,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"full_name\": \"John Doe\",\r\n    \"age\" : 99,\r\n    \"position\" : \"Bingo Manager\"\r\n}",
+					"raw": "{\r\n    \"full_name\": \"{{patchedName}}\",\r\n    \"age\" : 99,\r\n    \"position\" : \"{{patchedPosition}}\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -491,7 +846,89 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Update employee data ORM",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"full_name\": \"John Doe\",\r\n    \"age\" : 99,\r\n    \"position\" : \"Bingo Manager\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/employee/{{employeeId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"employee",
+								"{{employeeId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 18 Sep 2025 10:40:25 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "67"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "rndr-id",
+							"value": "794b1e59-186e-4757"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "981039a06907079c-IAD"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"employee_id\": 90,\n    \"full_name\": \"John Doe\",\n    \"position\": \"Bingo Manager\"\n}"
+				}
+			]
 		},
 		{
 			"name": "Delete employee ORM",
@@ -506,10 +943,8 @@
 							"\r",
 							"const response = pm.response.json();\r",
 							"\r",
-							"console.log(response)\r",
-							"\r",
 							"pm.test(\"Employee deleted successfully\", function () {\r",
-							"    pm.expect(response).to.have.any.key(\"ok\");\r",
+							"    pm.expect(response).to.have.key(\"ok\");\r",
 							"    pm.expect(response.ok).to.be.true;\r",
 							"});"
 						],
@@ -532,7 +967,80 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Delete employee ORM",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/employee/{{employeeId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"employee",
+								"{{employeeId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 18 Sep 2025 11:18:11 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "15"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "rndr-id",
+							"value": "df9d5427-9988-4541"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "981070ebcdd468ea-IAD"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"ok\": true\n}"
+				}
+			]
 		}
 	],
 	"event": [
@@ -582,6 +1090,14 @@
 			"key": "employeeAge",
 			"value": "",
 			"type": "default"
+		},
+		{
+			"key": "patchedName",
+			"value": ""
+		},
+		{
+			"key": "patchedPosition",
+			"value": ""
 		}
 	]
 }
