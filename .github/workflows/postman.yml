@@ -30,7 +30,7 @@ jobs:
       continue-on-error: true
       run: |
         cd FastAPI/tests
-        newman run https://www.postman.com/collections/39842531-a8852f9a-fc51-406b-a8af-b7268582a4d7?apikey=${{ secret.FASTAPI_POSTMAN_API }} \
+        newman run https://www.postman.com/collections/39842531-a8852f9a-fc51-406b-a8af-b7268582a4d7?apikey=${{ secrets.FASTAPI_POSTMAN_API }} \
         -r htmlextra --reporter-htmlextra-export ./report/index.html
 
     - name: Upload htmlextra report folder as artifact
