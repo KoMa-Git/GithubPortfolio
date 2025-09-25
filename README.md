@@ -10,6 +10,7 @@ This repository contains simpler pet projects in separate folder that shows my t
 
 - **[Flask](/Flask)** : build a mini webshop for test automation, filled with AI generated data, learning backend-frontend connections
 - **[FastAPI](/FastAPI/)** : build a demo API for testing in Postman
+- **[tesing_AI_testing](/testing_AI_testing/)** : AI models testing in writing codes and tests
 - **Test reports** : https://koma-git.github.io/GithubPortfolio/
 
 ## About Me

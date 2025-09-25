@@ -1,0 +1,20 @@
+Write me a library API with fastapi. 
+Lets connect to an SQL database, if there is no environment variable for DATABASE_URL then make in-memory.
+Lets make 3 tables: users, books, lend. I
+Lets make following endpoints: 
+ - a basic status test
+ - register
+ - login or token
+ - books (list of all books)
+ - add book (admin only)
+ - update book (admin only)
+ - delete book (admin only)
+ - lend (need authentication)
+ - giveback (need authentication)
+ - mybooks (list of my actual lend books)
+ - admin books list (list of books, with history{username,email,lend start date, lend end date}
+ - admin book history (history of a book)
+ - admin users list (list of users, amount of actual lend, history)
+ - admin user history
+Fill up database with few books, admin and other user at first run
+Export requirements.txt
