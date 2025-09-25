@@ -24,4 +24,7 @@ It was interesting to see 2 different approaches by the agents. Even after many 
 - **Claude** splits the code in separate files with meaningful names and keeps related functions grouped. That suits larger projects better, especially when collaborating or splitting tasks. It also helps if the code needs to be extended later and probably makes debugging easier too. However when i asked to create unit, function or e2e tests it failed, couldn't manage the imports correctly.
 
 ## Let's see what was made
-You can find both versions in the folders. I went further with the Claude version and after correcting small things and adjusting the responses to my taste I deployed it on Render. I created API tests with Postman and set up a Github actions workflow to see results.
+You can find both versions in their folders. I went further with the Claude version and after correcting small things and adjusting the responses to my taste I: 
+- deployed it on Render: https://library-api-7y4z.onrender.com/docs 
+- created API tests with Postman: https://www.postman.com/koma-4884/portfolio
+- and set up a Github actions workflow to see results.
