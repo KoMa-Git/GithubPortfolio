@@ -1,0 +1,32 @@
+[
+    {
+        "varX":10,
+        "varY":0,
+        "operator":"divide",
+        "expectedStatus":400
+    },
+    {
+        "varX":-0,
+        "varY":5,
+        "operator":"divide",
+        "expectedStatus":200
+    },
+    {
+        "varX":10,
+        "varY":20,
+        "operator":"plus",
+        "expectedStatus":200
+    },
+    {
+        "varX":10,
+        "varY":-20,
+        "operator":"minus",
+        "expectedStatus":200
+    },
+    {
+        "varX":10.3,
+        "varY":5,
+        "operator":"multiply",
+        "expectedStatus":200
+    }
+]

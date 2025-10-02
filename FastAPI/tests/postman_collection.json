@@ -2,262 +2,424 @@
 	"info": {
 		"_postman_id": "a8852f9a-fc51-406b-a8af-b7268582a4d7",
 		"name": "FastAPI demo",
+		"description": "Its a test collection of my demo API, deployed on Render. You can reach docs here:\n\n- [https://fastapi-demo-iynq.onrender.com/docs](https://fastapi-demo-iynq.onrender.com/docs)\n    \n- [https://fastapi-demo-iynq.onrender.com/redoc](https://fastapi-demo-iynq.onrender.com/redoc)\n    \n\nSince its a free account please note it could take 50 seconds until server wakes up. Thank you for your understanding!",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39842531",
 		"_collection_link": "https://www.postman.com/koma-4884/portfolio/collection/e4wymmu/fastapi-demo?action=share&source=collection_link&creator=39842531"
 	},
 	"item": [
 		{
-			"name": "Calculate with query params",
-			"event": [
+			"name": "Calculate",
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"pm.collectionVariables.set(\"operator\", \"multiply\");\r",
-							"\r",
-							"// import random and set x and y\r",
-							"const lodash = require('lodash');\r",
-							"\r",
-							"pm.collectionVariables.set(\"varX\", lodash.random(10000))\r",
-							"pm.collectionVariables.set(\"varY\", lodash.random(10000))"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
+					"name": "Calculate with query params",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// first implement with fix operator. You can find calculator_dataset.json to test edge cases.\r",
+									"pm.collectionVariables.set(\"operator\", \"multiply\");\r",
+									"pm.collectionVariables.set('expectedStatus', 200)\r",
+									"\r",
+									"// import random and set x and y\r",
+									"const lodash = require('lodash');\r",
+									"\r",
+									"pm.collectionVariables.set(\"varX\", lodash.random(10000))\r",
+									"pm.collectionVariables.set(\"varY\", lodash.random(10000))\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const expectedStatus = pm.variables.get('expectedStatus')\r",
+									"\r",
+									"pm.test(\"Status code is \" + expectedStatus , function () {\r",
+									"    pm.response.to.have.status(expectedStatus);\r",
+									"});\r",
+									"\r",
+									"// because of dataset i have to write assertions all type not only multiply\r",
+									"const response = pm.response.json();\r",
+									"const operator = pm.variables.get(\"operator\");\r",
+									"const x = pm.variables.get(\"varX\");\r",
+									"const y = pm.variables.get(\"varY\");\r",
+									"\r",
+									"if (operator === \"divide\" &&  y === 0) {\r",
+									"    \r",
+									"    pm.test(\"Division by zero error handled\", () => {\r",
+									"        pm.expect(response.detail).to.eql(\"Division by zero\");\r",
+									"    });\r",
+									"\r",
+									"} else {\r",
+									"    pm.test(\"Operator \" + operator + \" is working correctly\" , () => {\r",
+									"\r",
+									"        if (operator == \"plus\") {\r",
+									"            pm.expect(response.Result).to.eql(x+y);\r",
+									"        } else if(operator == \"minus\") {\r",
+									"            pm.expect(response.Result).to.eql(x-y);\r",
+									"        }  else if(operator == \"multiply\") {\r",
+									"            pm.expect(response.Result).to.eql(x*y);\r",
+									"        }  else if(operator == \"divide\") {\r",
+									"            pm.expect(response.Result).to.eql(x/y);\r",
+									"        }\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/calculate?x={{varX}}&y={{varY}}&operator={{operator}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"calculate"
+							],
+							"query": [
+								{
+									"key": "x",
+									"value": "{{varX}}"
+								},
+								{
+									"key": "y",
+									"value": "{{varY}}"
+								},
+								{
+									"key": "operator",
+									"value": "{{operator}}",
+									"description": "It could be plus/minus/multiply/divide"
+								}
+							]
+						}
+					},
+					"response": []
 				},
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const response = pm.response.json();\r",
-							"const x = pm.collectionVariables.get(\"varX\");\r",
-							"const y = pm.collectionVariables.get(\"varY\");\r",
-							"\r",
-							"pm.test(\"Multiply is working\", function () {\r",
-							"    pm.expect(response.Result).to.eql(x*y);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
+					"name": "Calculate with path params",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// add to a list all operator types\r",
+									"const operators = [\"plus\",\"minus\",\"multiply\",\"divide\"]\r",
+									"// import random\r",
+									"const lodash = require('lodash');\r",
+									"\r",
+									"// test with random x, y and operator\r",
+									"pm.collectionVariables.set(\"operator\",operators[lodash.random(operators.length-1)])\r",
+									"pm.collectionVariables.set(\"varX\", lodash.random(10000))\r",
+									"pm.collectionVariables.set(\"varY\", lodash.random(10000))\r",
+									"\r",
+									"if (pm.variables.get('operator') === \"divide\" && pm.variables.get('varY') === 0) {\r",
+									"    pm.collectionVariables.set('expectedStatus', 400)\r",
+									"} else {\r",
+									"    pm.collectionVariables.set('expectedStatus', 200)\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const expectedStatus = pm.variables.get(\"expectedStatus\");\r",
+									"\r",
+									"pm.test(\"Status code is \" + expectedStatus, function () {\r",
+									"    pm.response.to.have.status(parseInt(expectedStatus));\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"const operator = pm.variables.get(\"operator\");\r",
+									"const x = pm.variables.get(\"varX\");\r",
+									"const y = pm.variables.get(\"varY\");\r",
+									"\r",
+									"if (operator === \"divide\" &&  y === 0) {\r",
+									"    \r",
+									"    pm.test(\"Division by zero error handled\", () => {\r",
+									"        pm.expect(response.detail).to.eql(\"Division by zero\");\r",
+									"    });\r",
+									"\r",
+									"} else {\r",
+									"    pm.test(\"Operator \" + operator + \" is working correctly\" , () => {\r",
+									"\r",
+									"        if (operator == \"plus\") {\r",
+									"            pm.expect(response.Result).to.eql(x+y);\r",
+									"        } else if(operator == \"minus\") {\r",
+									"            pm.expect(response.Result).to.eql(x-y);\r",
+									"        }  else if(operator == \"multiply\") {\r",
+									"            pm.expect(response.Result).to.eql(x*y);\r",
+									"        }  else if(operator == \"divide\") {\r",
+									"            pm.expect(response.Result).to.eql(x/y);\r",
+									"        }\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/calculate/{{varX}}-{{operator}}-{{varY}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"calculate",
+								"{{varX}}-{{operator}}-{{varY}}"
+							]
+						}
+					},
+					"response": []
 				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/calculate?x={{varX}}&y={{varY}}&operator={{operator}}",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"calculate"
-					],
-					"query": [
+			]
+		},
+		{
+			"name": "SQL with psycopg2",
+			"item": [
+				{
+					"name": "Add employee SQL",
+					"event": [
 						{
-							"key": "x",
-							"value": "{{varX}}"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// set age parameter to a random integer between 18 and 65\r",
+									"const lodash = require(\"lodash\");\r",
+									"pm.collectionVariables.set(\"employeeAge\", lodash.random(18,65));\r",
+									"// set random name and position\r",
+									"pm.collectionVariables.set(\"employeeName\", pm.variables.replaceIn('{{$randomFullName}}'));\r",
+									"pm.collectionVariables.set(\"employeeJob\", pm.variables.replaceIn('{{$randomJobTitle}}'));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
 						},
 						{
-							"key": "y",
-							"value": "{{varY}}"
-						},
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Employee added successfully\", () => {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response.Info).to.include(\"Data successfully inserted\");\r",
+									"\r",
+									"    // search and set employeeId according to response for further requests\r",
+									"    const info = response[\"Info\"];\r",
+									"    const splittedInfo = info.split(\" \");\r",
+									"    const id = splittedInfo[splittedInfo.length - 1];\r",
+									"\r",
+									"    pm.collectionVariables.set(\"employeeId\", id);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/insert_into_database?name={{employeeName}}&age={{employeeAge}}&position={{employeeJob}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"insert_into_database"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{employeeName}}"
+								},
+								{
+									"key": "age",
+									"value": "{{employeeAge}}"
+								},
+								{
+									"key": "position",
+									"value": "{{employeeJob}}"
+								}
+							]
+						}
+					},
+					"response": [
 						{
-							"key": "operator",
-							"value": "{{operator}}",
-							"description": "It could be plus/minus/multiply/divide"
+							"name": "Add employee SQL",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/insert_into_database?name={{$randomFullName}}&age={{employeeAge}}&position= {{$randomJobTitle}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"insert_into_database"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "{{$randomFullName}}"
+										},
+										{
+											"key": "age",
+											"value": "{{employeeAge}}"
+										},
+										{
+											"key": "position",
+											"value": " {{$randomJobTitle}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 02 Oct 2025 21:25:15 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "58"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "rndr-id",
+									"value": "20172d06-b396-4985"
+								},
+								{
+									"key": "vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "988745729bb81697-IAD"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"Info\": \"Data successfully inserted with following id: 23\"\n}"
 						}
 					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Calculate with path params",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// add to a list all operator types\r",
-							"const operatorSet = [\"plus\",\"minus\",\"multiply\",\"divide\"]\r",
-							"// import random\r",
-							"const lodash = require('lodash');\r",
-							"\r",
-							"// test with random x, y and operator\r",
-							"pm.collectionVariables.set(\"operator\",operatorSet[lodash.random(operatorSet.length-1)])\r",
-							"pm.collectionVariables.set(\"varX\", lodash.random(10000))\r",
-							"pm.collectionVariables.set(\"varY\", lodash.random(10000))"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
 				},
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const response = pm.response.json();\r",
-							"const operator = pm.collectionVariables.get(\"operator\");\r",
-							"\r",
-							"// version 1 to test with random operator\r",
-							"const capitalOperator = operator[0].toUpperCase() + operator.slice(1)\r",
-							"\r",
-							"pm.test( capitalOperator +\" is working\", function () {\r",
-							"    const x = pm.collectionVariables.get(\"varX\");\r",
-							"    const y = pm.collectionVariables.get(\"varY\");\r",
-							"    if (operator == \"plus\") {\r",
-							"        pm.expect(response.Result).to.eql(x+y);\r",
-							"    } else if(operator == \"minus\") {\r",
-							"        pm.expect(response.Result).to.eql(x-y);\r",
-							"    }  else if(operator == \"multiply\") {\r",
-							"        pm.expect(response.Result).to.eql(x*y);\r",
-							"    }  else if(operator == \"divide\") {\r",
-							"        pm.expect(response.Result).to.eql(x/y);\r",
-							"    }\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/calculate/{{varX}}-{{operator}}-{{varY}}",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"calculate",
-						"{{varX}}-{{operator}}-{{varY}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get a random quote",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const response = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Header Content-Type is including json\", function () {\r",
-							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"json\");\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Author is existing\", function () {\r",
-							"    pm.expect(response).to.have.property(\"author\");\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Quote is existing\", function () {\r",
-							"    pm.expect(response).to.have.property(\"quote\");\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/get-a-quote",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"get-a-quote"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "List of employees SQL",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const response = pm.response.json();\r",
-							"const id = pm.collectionVariables.get(\"employeeId\")\r",
-							"pm.test(\"Employee with required id exists\"), function () {\r",
-							"    pm.expect(response).to.have.key(id.toString())\r",
-							"}\r",
-							"\r",
-							"pm.test(\"response have valid JSON scheme\", function () {\r",
-							"    const schema = {\r",
-							"        'type':'object',\r",
-							"        'patternProperties': {\r",
-							"            '^[0-9]+$': {\r",
-							"                'type':'object',\r",
-							"                'properties': {\r",
-							"                    'name': {\r",
-							"                        'type':'string',\r",
-							"                        'pattern': '^[A-Z][a-z]+(?: [A-Z][a-z]+)*$'\r",
-							"                    },\r",
-							"                    'age': {\r",
-							"                        'type':'integer',\r",
-							"                        'minimum':18,\r",
-							"                        'maximum':65\r",
-							"                    },\r",
-							"                    'position': {\r",
-							"                        'type':'string'\r",
-							"                    },\r",
-							"                }\r",
-							"            }\r",
-							"\r",
-							"        }\r",
-							"    };\r",
-							"    pm.response.to.have.jsonSchema(schema);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/read_database",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"read_database"
-					]
-				}
-			},
-			"response": [
-				{
 					"name": "List of employees SQL",
-					"originalRequest": {
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Employee with required id exists and data matches\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    const id = pm.variables.get(\"employeeId\");\r",
+									"    const name = pm.variables.get(\"employeeName\");\r",
+									"    const position = pm.variables.get(\"employeeJob\");\r",
+									"    const age = pm.variables.get(\"employeeAge\");\r",
+									"    pm.expect(response).to.haveOwnProperty(id);\r",
+									"    pm.expect(response[id].name).to.eql(name);\r",
+									"    pm.expect(response[id].age).to.eql(age);\r",
+									"    pm.expect(response[id].position).to.eql(position);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has expected JSON scheme\", function () {\r",
+									"    const schema = {\r",
+									"        'type':'object',\r",
+									"        'patternProperties': {\r",
+									"            '^[0-9]+$': {\r",
+									"                'type':'object',\r",
+									"                'properties': {\r",
+									"                    'name': {\r",
+									"                        'type':'string',\r",
+									"                        'pattern': '^[A-Z][a-z]+(?: [A-Z][a-z]+)*$'\r",
+									"                    },\r",
+									"                    'age': {\r",
+									"                        'type':'integer',\r",
+									"                        'minimum':18,\r",
+									"                        'maximum':65\r",
+									"                    },\r",
+									"                    'position': {\r",
+									"                        'type':'string'\r",
+									"                    },\r",
+									"                },\r",
+									"                'required': ['name','age','position'],\r",
+									"                'additionalProperties': false\r",
+									"            }\r",
+									"\r",
+									"        },\r",
+									"        'additionalProperties': false\r",
+									"    };\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -270,424 +432,298 @@
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "",
-					"header": [
+					"response": [
 						{
-							"key": "Date",
-							"value": "Thu, 18 Sep 2025 09:06:40 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "481"
-						},
-						{
-							"key": "Connection",
-							"value": "keep-alive"
-						},
-						{
-							"key": "Content-Encoding",
-							"value": "br"
-						},
-						{
-							"key": "rndr-id",
-							"value": "0283c12d-567c-4b24"
-						},
-						{
-							"key": "vary",
-							"value": "Accept-Encoding"
-						},
-						{
-							"key": "x-render-origin-server",
-							"value": "uvicorn"
-						},
-						{
-							"key": "cf-cache-status",
-							"value": "DYNAMIC"
-						},
-						{
-							"key": "Server",
-							"value": "cloudflare"
-						},
-						{
-							"key": "CF-RAY",
-							"value": "980fb04468a68e97-IAD"
-						},
-						{
-							"key": "alt-svc",
-							"value": "h3=\":443\"; ma=86400"
-						}
-					],
-					"cookie": [
-						{
-							"expires": "Invalid Date",
-							"domain": "",
-							"path": ""
-						}
-					],
-					"body": "{\n    \"1\": {\n        \"name\": \"John Doe\",\n        \"age\": 30,\n        \"position\": \"CEO\"\n    },\n    \"13\": {\n        \"name\": \"Jeffery Farrell\",\n        \"age\": 47,\n        \"position\": \"Planner\"\n    },\n    \"67\": {\n        \"name\": \"Gary Klein\",\n        \"age\": 54,\n        \"position\": \"Planner\"\n    },\n    \"68\": {\n        \"name\": \"Dustin Conroy\",\n        \"age\": 54,\n        \"position\": \"Representative\"\n    },\n    \"69\": {\n        \"name\": \"Jacquelyn Satterfield\",\n        \"age\": 54,\n        \"position\": \"Executive\"\n    },\n    \"70\": {\n        \"name\": \"Don Lakin\",\n        \"age\": 54,\n        \"position\": \"Assistant\"\n    },\n    \"71\": {\n        \"name\": \"Traci Lueilwitz\",\n        \"age\": 54,\n        \"position\": \"Executive\"\n    },\n    \"72\": {\n        \"name\": \"Terry Green Iv\",\n        \"age\": 54,\n        \"position\": \"Engineer\"\n    },\n    \"73\": {\n        \"name\": \"Mr Roger Rutherford\",\n        \"age\": 54,\n        \"position\": \"Technician\"\n    },\n    \"74\": {\n        \"name\": \"Shawna Brekke\",\n        \"age\": 54,\n        \"position\": \"Supervisor\"\n    },\n    \"75\": {\n        \"name\": \"Tracy Von\",\n        \"age\": 54,\n        \"position\": \"Liaison\"\n    },\n    \"76\": {\n        \"name\": \"Jan Spinka\",\n        \"age\": 54,\n        \"position\": \"Agent\"\n    },\n    \"77\": {\n        \"name\": \"Marlon Wolff\",\n        \"age\": 54,\n        \"position\": \"Planner\"\n    },\n    \"78\": {\n        \"name\": \"Marlene Leffler\",\n        \"age\": 54,\n        \"position\": \"Manager\"\n    },\n    \"79\": {\n        \"name\": \"Willie Smith\",\n        \"age\": 54,\n        \"position\": \"Producer\"\n    },\n    \"80\": {\n        \"name\": \"Roberto Bailey\",\n        \"age\": 54,\n        \"position\": \"Officer\"\n    },\n    \"81\": {\n        \"name\": \"Cory Smith\",\n        \"age\": 54,\n        \"position\": \"Liaison\"\n    },\n    \"82\": {\n        \"name\": \"Lloyd Barton\",\n        \"age\": 54,\n        \"position\": \"Representative\"\n    },\n    \"83\": {\n        \"name\": \"Melanie Armstrong\",\n        \"age\": 54,\n        \"position\": \"Engineer\"\n    },\n    \"84\": {\n        \"name\": \"Ron Buckridge\",\n        \"age\": 54,\n        \"position\": \"Supervisor\"\n    },\n    \"85\": {\n        \"name\": \"Essie Hamill\",\n        \"age\": 54,\n        \"position\": \"Technician\"\n    },\n    \"86\": {\n        \"name\": \"Ernest Gerhold Dvm\",\n        \"age\": 54,\n        \"position\": \"Officer\"\n    },\n    \"87\": {\n        \"name\": \"Rosa Adams\",\n        \"age\": 54,\n        \"position\": \"Director\"\n    }\n}"
-				}
-			]
-		},
-		{
-			"name": "Add employee SQL",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// set age parameter to a random integer between 18 and 65\r",
-							"\r",
-							"const lodash = require(\"lodash\");\r",
-							"\r",
-							"pm.collectionVariables.set(\"employeeAge\", lodash.random(18,65));"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"// set employeeId according to response for further requests\r",
-							"const response = pm.response.json();\r",
-							"const info = response[\"Info\"];\r",
-							"const splittedInfo = info.split(\" \");\r",
-							"const id = splittedInfo[splittedInfo.length - 1];\r",
-							"\r",
-							"pm.collectionVariables.set(\"employeeId\", id);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/insert_into_database?name={{$randomFullName}}&age={{employeeAge}}&position= {{$randomJobTitle}}",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"insert_into_database"
-					],
-					"query": [
-						{
-							"key": "name",
-							"value": "{{$randomFullName}}"
-						},
-						{
-							"key": "age",
-							"value": "{{employeeAge}}"
-						},
-						{
-							"key": "position",
-							"value": " {{$randomJobTitle}}"
+							"name": "List of employees SQL",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/read_database",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"read_database"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 18 Sep 2025 09:06:40 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "481"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "rndr-id",
+									"value": "0283c12d-567c-4b24"
+								},
+								{
+									"key": "vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "980fb04468a68e97-IAD"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"1\": {\n        \"name\": \"John Doe\",\n        \"age\": 30,\n        \"position\": \"CEO\"\n    },\n    \"13\": {\n        \"name\": \"Jeffery Farrell\",\n        \"age\": 47,\n        \"position\": \"Planner\"\n    },\n    \"67\": {\n        \"name\": \"Gary Klein\",\n        \"age\": 54,\n        \"position\": \"Planner\"\n    },\n    \"68\": {\n        \"name\": \"Dustin Conroy\",\n        \"age\": 54,\n        \"position\": \"Representative\"\n    },\n    \"69\": {\n        \"name\": \"Jacquelyn Satterfield\",\n        \"age\": 54,\n        \"position\": \"Executive\"\n    },\n    \"70\": {\n        \"name\": \"Don Lakin\",\n        \"age\": 54,\n        \"position\": \"Assistant\"\n    },\n    \"71\": {\n        \"name\": \"Traci Lueilwitz\",\n        \"age\": 54,\n        \"position\": \"Executive\"\n    },\n    \"72\": {\n        \"name\": \"Terry Green Iv\",\n        \"age\": 54,\n        \"position\": \"Engineer\"\n    },\n    \"73\": {\n        \"name\": \"Mr Roger Rutherford\",\n        \"age\": 54,\n        \"position\": \"Technician\"\n    },\n    \"74\": {\n        \"name\": \"Shawna Brekke\",\n        \"age\": 54,\n        \"position\": \"Supervisor\"\n    },\n    \"75\": {\n        \"name\": \"Tracy Von\",\n        \"age\": 54,\n        \"position\": \"Liaison\"\n    },\n    \"76\": {\n        \"name\": \"Jan Spinka\",\n        \"age\": 54,\n        \"position\": \"Agent\"\n    },\n    \"77\": {\n        \"name\": \"Marlon Wolff\",\n        \"age\": 54,\n        \"position\": \"Planner\"\n    },\n    \"78\": {\n        \"name\": \"Marlene Leffler\",\n        \"age\": 54,\n        \"position\": \"Manager\"\n    },\n    \"79\": {\n        \"name\": \"Willie Smith\",\n        \"age\": 54,\n        \"position\": \"Producer\"\n    },\n    \"80\": {\n        \"name\": \"Roberto Bailey\",\n        \"age\": 54,\n        \"position\": \"Officer\"\n    },\n    \"81\": {\n        \"name\": \"Cory Smith\",\n        \"age\": 54,\n        \"position\": \"Liaison\"\n    },\n    \"82\": {\n        \"name\": \"Lloyd Barton\",\n        \"age\": 54,\n        \"position\": \"Representative\"\n    },\n    \"83\": {\n        \"name\": \"Melanie Armstrong\",\n        \"age\": 54,\n        \"position\": \"Engineer\"\n    },\n    \"84\": {\n        \"name\": \"Ron Buckridge\",\n        \"age\": 54,\n        \"position\": \"Supervisor\"\n    },\n    \"85\": {\n        \"name\": \"Essie Hamill\",\n        \"age\": 54,\n        \"position\": \"Technician\"\n    },\n    \"86\": {\n        \"name\": \"Ernest Gerhold Dvm\",\n        \"age\": 54,\n        \"position\": \"Officer\"\n    },\n    \"87\": {\n        \"name\": \"Rosa Adams\",\n        \"age\": 54,\n        \"position\": \"Director\"\n    }\n}"
 						}
 					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete employee SQL",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const response = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Employee id doesn't exists\", function () {\r",
-							"    pm.expect(response).to.have.any.key(\"Error\");\r",
-							"    pm.expect(response.Error).to.include(\"not existing\");\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Employee successfully deleted\", function () {\r",
-							"    pm.expect(response).to.have.any.key(\"Info\");\r",
-							"    pm.expect(response.Info).to.include(\"successfully deleted\");\r",
-							"})"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
 				},
 				{
-					"listen": "prerequest",
-					"script": {
-						"packages": {},
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/delete_from_database?id={{employeeId}}",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"delete_from_database"
-					],
-					"query": [
+					"name": "Delete employee SQL",
+					"event": [
 						{
-							"key": "id",
-							"value": "{{employeeId}}"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Employee successfully deleted\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.haveOwnProperty(\"Info\");\r",
+									"    pm.expect(response.Info).to.include(\"successfully deleted\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "List of employee ORM",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response schema is valid\", function () {\r",
-							"    const schema = {\r",
-							"        'type':'array',\r",
-							"        'items': {\r",
-							"            'type':'object',\r",
-							"            'properties': {\r",
-							"                'position':{\r",
-							"                    'type':'string'\r",
-							"                },\r",
-							"                'full_name':{\r",
-							"                    'type':'string',\r",
-							"                    'pattern':'^[A-Z][a-z]+(?: [A-Z][a-z]+)*$'\r",
-							"                },\r",
-							"                'age':{\r",
-							"                    'type':'number',\r",
-							"                    'minimum': 18,\r",
-							"                    'maximum': 65\r",
-							"                },\r",
-							"                'employee_id':{\r",
-							"                    'type':'number'\r",
-							"                }\r",
-							"            },\r",
-							"            'required':['position','full_name','age','employee_id'],\r",
-							"            'additionalProperties': false\r",
-							"        }\r",
-							"    };\r",
-							"    pm.response.to.have.jsonSchema(schema);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/view",
-					"host": [
-						"{{baseUrl}}"
 					],
-					"path": [
-						"view"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "List of employee ORM",
-					"originalRequest": {
-						"method": "GET",
+					"request": {
+						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/view",
+							"raw": "{{baseUrl}}/delete_from_database?id={{employeeId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"view"
+								"delete_from_database"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{employeeId}}"
+								}
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "",
-					"header": [
+					"response": [
 						{
-							"key": "Date",
-							"value": "Thu, 18 Sep 2025 09:07:37 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "492"
-						},
-						{
-							"key": "Connection",
-							"value": "keep-alive"
-						},
-						{
-							"key": "Content-Encoding",
-							"value": "br"
-						},
-						{
-							"key": "rndr-id",
-							"value": "255040b4-ee49-4128"
-						},
-						{
-							"key": "vary",
-							"value": "Accept-Encoding"
-						},
-						{
-							"key": "x-render-origin-server",
-							"value": "uvicorn"
-						},
-						{
-							"key": "cf-cache-status",
-							"value": "DYNAMIC"
-						},
-						{
-							"key": "Server",
-							"value": "cloudflare"
-						},
-						{
-							"key": "CF-RAY",
-							"value": "980fb1acf9898236-IAD"
-						},
-						{
-							"key": "alt-svc",
-							"value": "h3=\":443\"; ma=86400"
+							"name": "Delete employee SQL",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/delete_from_database?id={{employeeId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"delete_from_database"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "{{employeeId}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 02 Oct 2025 21:26:08 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "rndr-id",
+									"value": "e8291780-cdaf-457b"
+								},
+								{
+									"key": "vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "988746bd6dc00836-IAD"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"Info\": \"Employee with id 23 successfully deleted from database\"\n}"
 						}
-					],
-					"cookie": [
-						{
-							"expires": "Invalid Date",
-							"domain": "",
-							"path": ""
-						}
-					],
-					"body": "[\n    {\n        \"position\": \"CEO\",\n        \"full_name\": \"John Doe\",\n        \"age\": 30,\n        \"employee_id\": 1\n    },\n    {\n        \"position\": \"Planner\",\n        \"full_name\": \"Jeffery Farrell\",\n        \"age\": 47,\n        \"employee_id\": 13\n    },\n    {\n        \"position\": \"Planner\",\n        \"full_name\": \"Gary Klein\",\n        \"age\": 54,\n        \"employee_id\": 67\n    },\n    {\n        \"position\": \"Representative\",\n        \"full_name\": \"Dustin Conroy\",\n        \"age\": 54,\n        \"employee_id\": 68\n    },\n    {\n        \"position\": \"Executive\",\n        \"full_name\": \"Jacquelyn Satterfield\",\n        \"age\": 54,\n        \"employee_id\": 69\n    },\n    {\n        \"position\": \"Assistant\",\n        \"full_name\": \"Don Lakin\",\n        \"age\": 54,\n        \"employee_id\": 70\n    },\n    {\n        \"position\": \"Executive\",\n        \"full_name\": \"Traci Lueilwitz\",\n        \"age\": 54,\n        \"employee_id\": 71\n    },\n    {\n        \"position\": \"Engineer\",\n        \"full_name\": \"Terry Green Iv\",\n        \"age\": 54,\n        \"employee_id\": 72\n    },\n    {\n        \"position\": \"Technician\",\n        \"full_name\": \"Mr Roger Rutherford\",\n        \"age\": 54,\n        \"employee_id\": 73\n    },\n    {\n        \"position\": \"Supervisor\",\n        \"full_name\": \"Shawna Brekke\",\n        \"age\": 54,\n        \"employee_id\": 74\n    },\n    {\n        \"position\": \"Liaison\",\n        \"full_name\": \"Tracy Von\",\n        \"age\": 54,\n        \"employee_id\": 75\n    },\n    {\n        \"position\": \"Agent\",\n        \"full_name\": \"Jan Spinka\",\n        \"age\": 54,\n        \"employee_id\": 76\n    },\n    {\n        \"position\": \"Planner\",\n        \"full_name\": \"Marlon Wolff\",\n        \"age\": 54,\n        \"employee_id\": 77\n    },\n    {\n        \"position\": \"Manager\",\n        \"full_name\": \"Marlene Leffler\",\n        \"age\": 54,\n        \"employee_id\": 78\n    },\n    {\n        \"position\": \"Producer\",\n        \"full_name\": \"Willie Smith\",\n        \"age\": 54,\n        \"employee_id\": 79\n    },\n    {\n        \"position\": \"Officer\",\n        \"full_name\": \"Roberto Bailey\",\n        \"age\": 54,\n        \"employee_id\": 80\n    },\n    {\n        \"position\": \"Liaison\",\n        \"full_name\": \"Cory Smith\",\n        \"age\": 54,\n        \"employee_id\": 81\n    },\n    {\n        \"position\": \"Representative\",\n        \"full_name\": \"Lloyd Barton\",\n        \"age\": 54,\n        \"employee_id\": 82\n    },\n    {\n        \"position\": \"Engineer\",\n        \"full_name\": \"Melanie Armstrong\",\n        \"age\": 54,\n        \"employee_id\": 83\n    },\n    {\n        \"position\": \"Supervisor\",\n        \"full_name\": \"Ron Buckridge\",\n        \"age\": 54,\n        \"employee_id\": 84\n    },\n    {\n        \"position\": \"Technician\",\n        \"full_name\": \"Essie Hamill\",\n        \"age\": 54,\n        \"employee_id\": 85\n    },\n    {\n        \"position\": \"Officer\",\n        \"full_name\": \"Ernest Gerhold Dvm\",\n        \"age\": 54,\n        \"employee_id\": 86\n    },\n    {\n        \"position\": \"Director\",\n        \"full_name\": \"Rosa Adams\",\n        \"age\": 54,\n        \"employee_id\": 87\n    }\n]"
+					]
 				}
 			]
 		},
 		{
-			"name": "Add employee ORM",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const response = pm.response.json();\r",
-							"// set employeeId according to response for the further requests\r",
-							"pm.collectionVariables.set(\"employeeId\", response.employee_id);\r",
-							"\r",
-							"pm.test(\"Response JSON schema is valid, employee added\", function () {\r",
-							"    const schema = {\r",
-							"        'type':'object',\r",
-							"        'properties': {\r",
-							"            'employee_id': {\r",
-							"                'type':'integer'\r",
-							"            },\r",
-							"            'full_name': {\r",
-							"                'type':'string',\r",
-							"                'pattern': '^[A-Z][a-z]+(?: [A-Z][a-z]+)*$'\r",
-							"            },\r",
-							"            'position': {\r",
-							"                'type':'string'\r",
-							"            },\r",
-							"        },\r",
-							"        'required':['employee_id','full_name','position'],\r",
-							"        'additionalProperties': false\r",
-							"    };\r",
-							"    pm.response.to.have.jsonSchema(schema);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"full_name\": \"{{$randomFullName}}\",\r\n    \"age\": {{employeeAge}},\r\n    \"position\": \"{{$randomJobType}}\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/employee",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"employee"
-					]
-				}
-			},
-			"response": [
+			"name": "SQL with ORM",
+			"item": [
 				{
 					"name": "Add employee ORM",
-					"originalRequest": {
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Employee added successfully, data matches\", function() {\r",
+									"    const name = pm.variables.get(\"employeeName\");\r",
+									"    const position = pm.variables.get(\"employeeJob\");\r",
+									"    pm.expect(response).to.be.an(\"object\");\r",
+									"    pm.expect(response[\"full_name\"]).to.eql(name);\r",
+									"    pm.expect(response.position).to.eql(position);\r",
+									"    pm.expect(response).to.haveOwnProperty(\"employee_id\")\r",
+									"    // set employeeId according to response for the further requests\r",
+									"    pm.collectionVariables.set(\"employeeId\", response.employee_id);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response JSON schema is valid, employee added\", function () {\r",
+									"    const schema = {\r",
+									"        'type':'object',\r",
+									"        'properties': {\r",
+									"            'employee_id': {\r",
+									"                'type':'integer'\r",
+									"            },\r",
+									"            'full_name': {\r",
+									"                'type':'string',\r",
+									"                'pattern': '^[A-Z][a-z]+(?: [A-Z][a-z]+)*$'\r",
+									"            },\r",
+									"            'position': {\r",
+									"                'type':'string'\r",
+									"            },\r",
+									"        },\r",
+									"        'required':['employee_id','full_name','position'],\r",
+									"        'additionalProperties': false\r",
+									"    };\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// set age parameter to a random integer between 18 and 65\r",
+									"const lodash = require(\"lodash\");\r",
+									"pm.collectionVariables.set(\"employeeAge\", lodash.random(18,65));\r",
+									"// set random name and position\r",
+									"pm.collectionVariables.set(\"employeeName\", pm.variables.replaceIn('{{$randomFullName}}'));\r",
+									"pm.collectionVariables.set(\"employeeJob\", pm.variables.replaceIn('{{$randomJobTitle}}'));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"full_name\": \"{{$randomFullName}}\",\r\n    \"age\": {{employeeAge}},\r\n    \"position\": \"{{$randomJobType}}\"\r\n}",
+							"raw": "{\r\n    \"full_name\": \"{{employeeName}}\",\r\n    \"age\": {{employeeAge}},\r\n    \"position\": \"{{employeeJob}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -704,157 +740,308 @@
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "",
-					"header": [
+					"response": [
 						{
-							"key": "Date",
-							"value": "Thu, 18 Sep 2025 10:27:19 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "65"
-						},
-						{
-							"key": "Connection",
-							"value": "keep-alive"
-						},
-						{
-							"key": "Content-Encoding",
-							"value": "br"
-						},
-						{
-							"key": "rndr-id",
-							"value": "d22240c8-0b0d-4de0"
-						},
-						{
-							"key": "vary",
-							"value": "Accept-Encoding"
-						},
-						{
-							"key": "x-render-origin-server",
-							"value": "uvicorn"
-						},
-						{
-							"key": "cf-cache-status",
-							"value": "DYNAMIC"
-						},
-						{
-							"key": "Server",
-							"value": "cloudflare"
-						},
-						{
-							"key": "CF-RAY",
-							"value": "9810263d0a45d68f-IAD"
-						},
-						{
-							"key": "alt-svc",
-							"value": "h3=\":443\"; ma=86400"
+							"name": "Add employee ORM",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"full_name\": \"{{$randomFullName}}\",\r\n    \"age\": {{employeeAge}},\r\n    \"position\": \"{{$randomJobType}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/employee",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"employee"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 18 Sep 2025 10:27:19 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "65"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "rndr-id",
+									"value": "d22240c8-0b0d-4de0"
+								},
+								{
+									"key": "vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9810263d0a45d68f-IAD"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"employee_id\": 90,\n    \"full_name\": \"June Durgan\",\n    \"position\": \"Manager\"\n}"
 						}
-					],
-					"cookie": [
-						{
-							"expires": "Invalid Date",
-							"domain": "",
-							"path": ""
-						}
-					],
-					"body": "{\n    \"employee_id\": 90,\n    \"full_name\": \"June Durgan\",\n    \"position\": \"Manager\"\n}"
-				}
-			]
-		},
-		{
-			"name": "Update employee data ORM",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const response = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Updated successfully\", function () {\r",
-							"    pm.expect(response).to.have.keys(\"employee_id\",\"full_name\",\"position\");\r",
-							"    pm.expect(response.full_name).to.eql(pm.collectionVariables.get('patchedName'));\r",
-							"    pm.expect(response.position).to.eql(pm.collectionVariables.get('patchedPosition'));\r",
-							"});\r",
-							"\r",
-							"pm.test(\"response JSON schema is valid\", function () {\r",
-							"    const schema = {\r",
-							"        'type':'object',\r",
-							"        'properties': {\r",
-							"            'employee_id': {\r",
-							"                'type':'integer'\r",
-							"            },\r",
-							"            'full_name': {\r",
-							"                'type':'string'\r",
-							"            },\r",
-							"            'position': {\r",
-							"                'type':'string'\r",
-							"            },\r",
-							"        },\r",
-							"        'required':['employee_id','full_name','position'],\r",
-							"        'additionalProperties': false\r",
-							"    };\r",
-							"    pm.response.to.have.jsonSchema(schema);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"pm.collectionVariables.set('patchedName', 'John Doe');\r",
-							"pm.collectionVariables.set('patchedPosition','Bingo Manager');"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"full_name\": \"{{patchedName}}\",\r\n    \"age\" : 99,\r\n    \"position\" : \"{{patchedPosition}}\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/employee/{{employeeId}}",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"employee",
-						"{{employeeId}}"
 					]
-				}
-			},
-			"response": [
+				},
+				{
+					"name": "List of employee ORM",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response schema as expected\", function () {\r",
+									"    const schema = {\r",
+									"        'type':'array',\r",
+									"        'items': {\r",
+									"            'type':'object',\r",
+									"            'properties': {\r",
+									"                'position':{\r",
+									"                    'type':'string'\r",
+									"                },\r",
+									"                'full_name':{\r",
+									"                    'type':'string',\r",
+									"                    'pattern':'^[A-Z][a-z]+(?: [A-Z][a-z]+)*$'\r",
+									"                },\r",
+									"                'age':{\r",
+									"                    'type':'number',\r",
+									"                    'minimum': 18,\r",
+									"                    'maximum': 65\r",
+									"                },\r",
+									"                'employee_id':{\r",
+									"                    'type':'number'\r",
+									"                }\r",
+									"            },\r",
+									"            'required':['position','full_name','age','employee_id'],\r",
+									"            'additionalProperties': false\r",
+									"        }\r",
+									"    };\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/view",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"view"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "List of employee ORM",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/view",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"view"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 18 Sep 2025 09:07:37 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "492"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "rndr-id",
+									"value": "255040b4-ee49-4128"
+								},
+								{
+									"key": "vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "980fb1acf9898236-IAD"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "[\n    {\n        \"position\": \"CEO\",\n        \"full_name\": \"John Doe\",\n        \"age\": 30,\n        \"employee_id\": 1\n    },\n    {\n        \"position\": \"Planner\",\n        \"full_name\": \"Jeffery Farrell\",\n        \"age\": 47,\n        \"employee_id\": 13\n    },\n    {\n        \"position\": \"Planner\",\n        \"full_name\": \"Gary Klein\",\n        \"age\": 54,\n        \"employee_id\": 67\n    },\n    {\n        \"position\": \"Representative\",\n        \"full_name\": \"Dustin Conroy\",\n        \"age\": 54,\n        \"employee_id\": 68\n    },\n    {\n        \"position\": \"Executive\",\n        \"full_name\": \"Jacquelyn Satterfield\",\n        \"age\": 54,\n        \"employee_id\": 69\n    },\n    {\n        \"position\": \"Assistant\",\n        \"full_name\": \"Don Lakin\",\n        \"age\": 54,\n        \"employee_id\": 70\n    },\n    {\n        \"position\": \"Executive\",\n        \"full_name\": \"Traci Lueilwitz\",\n        \"age\": 54,\n        \"employee_id\": 71\n    },\n    {\n        \"position\": \"Engineer\",\n        \"full_name\": \"Terry Green Iv\",\n        \"age\": 54,\n        \"employee_id\": 72\n    },\n    {\n        \"position\": \"Technician\",\n        \"full_name\": \"Mr Roger Rutherford\",\n        \"age\": 54,\n        \"employee_id\": 73\n    },\n    {\n        \"position\": \"Supervisor\",\n        \"full_name\": \"Shawna Brekke\",\n        \"age\": 54,\n        \"employee_id\": 74\n    },\n    {\n        \"position\": \"Liaison\",\n        \"full_name\": \"Tracy Von\",\n        \"age\": 54,\n        \"employee_id\": 75\n    },\n    {\n        \"position\": \"Agent\",\n        \"full_name\": \"Jan Spinka\",\n        \"age\": 54,\n        \"employee_id\": 76\n    },\n    {\n        \"position\": \"Planner\",\n        \"full_name\": \"Marlon Wolff\",\n        \"age\": 54,\n        \"employee_id\": 77\n    },\n    {\n        \"position\": \"Manager\",\n        \"full_name\": \"Marlene Leffler\",\n        \"age\": 54,\n        \"employee_id\": 78\n    },\n    {\n        \"position\": \"Producer\",\n        \"full_name\": \"Willie Smith\",\n        \"age\": 54,\n        \"employee_id\": 79\n    },\n    {\n        \"position\": \"Officer\",\n        \"full_name\": \"Roberto Bailey\",\n        \"age\": 54,\n        \"employee_id\": 80\n    },\n    {\n        \"position\": \"Liaison\",\n        \"full_name\": \"Cory Smith\",\n        \"age\": 54,\n        \"employee_id\": 81\n    },\n    {\n        \"position\": \"Representative\",\n        \"full_name\": \"Lloyd Barton\",\n        \"age\": 54,\n        \"employee_id\": 82\n    },\n    {\n        \"position\": \"Engineer\",\n        \"full_name\": \"Melanie Armstrong\",\n        \"age\": 54,\n        \"employee_id\": 83\n    },\n    {\n        \"position\": \"Supervisor\",\n        \"full_name\": \"Ron Buckridge\",\n        \"age\": 54,\n        \"employee_id\": 84\n    },\n    {\n        \"position\": \"Technician\",\n        \"full_name\": \"Essie Hamill\",\n        \"age\": 54,\n        \"employee_id\": 85\n    },\n    {\n        \"position\": \"Officer\",\n        \"full_name\": \"Ernest Gerhold Dvm\",\n        \"age\": 54,\n        \"employee_id\": 86\n    },\n    {\n        \"position\": \"Director\",\n        \"full_name\": \"Rosa Adams\",\n        \"age\": 54,\n        \"employee_id\": 87\n    }\n]"
+						}
+					]
+				},
 				{
 					"name": "Update employee data ORM",
-					"originalRequest": {
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Updated successfully\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.keys(\"employee_id\",\"full_name\",\"position\");\r",
+									"    pm.expect(response.employee_id).to.eql(pm.variables.get('employeeId'))\r",
+									"    pm.expect(response.full_name).to.eql(pm.variables.get('patchedName'));\r",
+									"    pm.expect(response.position).to.eql(pm.variables.get('patchedPosition'));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"response JSON schema is valid\", function () {\r",
+									"    const schema = {\r",
+									"        'type':'object',\r",
+									"        'properties': {\r",
+									"            'employee_id': {\r",
+									"                'type':'integer'\r",
+									"            },\r",
+									"            'full_name': {\r",
+									"                'type':'string'\r",
+									"            },\r",
+									"            'position': {\r",
+									"                'type':'string'\r",
+									"            },\r",
+									"        },\r",
+									"        'required':['employee_id','full_name','position'],\r",
+									"        'additionalProperties': false\r",
+									"    };\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('patchedName', 'John Doe');\r",
+									"pm.collectionVariables.set('patchedPosition','Bingo Manager');"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
 						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"full_name\": \"John Doe\",\r\n    \"age\" : 99,\r\n    \"position\" : \"Bingo Manager\"\r\n}",
+							"raw": "{\r\n    \"full_name\": \"{{patchedName}}\",\r\n    \"age\" : 99,\r\n    \"position\" : \"{{patchedPosition}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -872,105 +1059,114 @@
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "",
-					"header": [
+					"response": [
 						{
-							"key": "Date",
-							"value": "Thu, 18 Sep 2025 10:40:25 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "67"
-						},
-						{
-							"key": "Connection",
-							"value": "keep-alive"
-						},
-						{
-							"key": "Content-Encoding",
-							"value": "br"
-						},
-						{
-							"key": "rndr-id",
-							"value": "794b1e59-186e-4757"
-						},
-						{
-							"key": "vary",
-							"value": "Accept-Encoding"
-						},
-						{
-							"key": "x-render-origin-server",
-							"value": "uvicorn"
-						},
-						{
-							"key": "cf-cache-status",
-							"value": "DYNAMIC"
-						},
-						{
-							"key": "Server",
-							"value": "cloudflare"
-						},
-						{
-							"key": "CF-RAY",
-							"value": "981039a06907079c-IAD"
-						},
-						{
-							"key": "alt-svc",
-							"value": "h3=\":443\"; ma=86400"
+							"name": "Update employee data ORM",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"full_name\": \"John Doe\",\r\n    \"age\" : 99,\r\n    \"position\" : \"Bingo Manager\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/employee/{{employeeId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"employee",
+										"{{employeeId}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 18 Sep 2025 10:40:25 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "67"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "rndr-id",
+									"value": "794b1e59-186e-4757"
+								},
+								{
+									"key": "vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "981039a06907079c-IAD"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"employee_id\": 90,\n    \"full_name\": \"John Doe\",\n    \"position\": \"Bingo Manager\"\n}"
 						}
-					],
-					"cookie": [],
-					"body": "{\n    \"employee_id\": 90,\n    \"full_name\": \"John Doe\",\n    \"position\": \"Bingo Manager\"\n}"
-				}
-			]
-		},
-		{
-			"name": "Delete employee ORM",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const response = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Employee deleted successfully\", function () {\r",
-							"    pm.expect(response).to.have.key(\"ok\");\r",
-							"    pm.expect(response.ok).to.be.true;\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/employee/{{employeeId}}",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"employee",
-						"{{employeeId}}"
 					]
-				}
-			},
-			"response": [
+				},
 				{
 					"name": "Delete employee ORM",
-					"originalRequest": {
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Employee deleted successfully\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.haveOwnProperty(\"ok\");\r",
+									"    pm.expect(response.ok).to.be.true;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -984,61 +1180,140 @@
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "",
-					"header": [
+					"response": [
 						{
-							"key": "Date",
-							"value": "Thu, 18 Sep 2025 11:18:11 GMT"
+							"name": "Delete employee ORM",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/employee/{{employeeId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"employee",
+										"{{employeeId}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 18 Sep 2025 11:18:11 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "15"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "rndr-id",
+									"value": "df9d5427-9988-4541"
+								},
+								{
+									"key": "vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "981070ebcdd468ea-IAD"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Webscrape",
+			"item": [
+				{
+					"name": "Get a random quote",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Header Content-Type is including json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains author and quote\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.haveOwnProperty(\"author\");\r",
+									"    pm.expect(response.author).to.be.a(\"string\");\r",
+									"    pm.expect(response).to.have.property(\"quote\");\r",
+									"    pm.expect(response.quote).to.be.a(\"string\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
 						},
 						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "15"
-						},
-						{
-							"key": "Connection",
-							"value": "keep-alive"
-						},
-						{
-							"key": "Content-Encoding",
-							"value": "br"
-						},
-						{
-							"key": "rndr-id",
-							"value": "df9d5427-9988-4541"
-						},
-						{
-							"key": "vary",
-							"value": "Accept-Encoding"
-						},
-						{
-							"key": "x-render-origin-server",
-							"value": "uvicorn"
-						},
-						{
-							"key": "cf-cache-status",
-							"value": "DYNAMIC"
-						},
-						{
-							"key": "Server",
-							"value": "cloudflare"
-						},
-						{
-							"key": "CF-RAY",
-							"value": "981070ebcdd468ea-IAD"
-						},
-						{
-							"key": "alt-svc",
-							"value": "h3=\":443\"; ma=86400"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
 						}
 					],
-					"cookie": [],
-					"body": "{\n    \"ok\": true\n}"
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/get-a-quote",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"get-a-quote"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
@@ -1049,6 +1324,7 @@
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -1059,6 +1335,7 @@
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -1088,8 +1365,7 @@
 		},
 		{
 			"key": "employeeAge",
-			"value": "",
-			"type": "default"
+			"value": ""
 		},
 		{
 			"key": "patchedName",
@@ -1097,6 +1373,22 @@
 		},
 		{
 			"key": "patchedPosition",
+			"value": ""
+		},
+		{
+			"key": "hello",
+			"value": ""
+		},
+		{
+			"key": "expectedStatus",
+			"value": ""
+		},
+		{
+			"key": "employeeName",
+			"value": ""
+		},
+		{
+			"key": "employeeJob",
 			"value": ""
 		}
 	]
