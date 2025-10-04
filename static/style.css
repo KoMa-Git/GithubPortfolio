@@ -1,9 +1,6 @@
-/* Centering content vertically and horizontally */
 body {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
 }
@@ -17,7 +14,6 @@ h1 {
     font-size: 24px;
 }
 
-
 ul {
     list-style-type: none;
     padding: 0;
@@ -29,9 +25,6 @@ li {
 }
 
 a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     text-decoration: none;
     color: #525252;
     font-size: 18px;
@@ -43,5 +36,6 @@ a:hover {
 
 .projects_img {
     width: 200px;
-    margin-right: 10px;
+    display: block;
+    margin: 0 auto 10px;
 }
