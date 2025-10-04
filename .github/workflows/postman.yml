@@ -31,7 +31,9 @@ jobs:
       run: |
         cd FastAPI/tests
         newman run https://www.postman.com/collections/39842531-a8852f9a-fc51-406b-a8af-b7268582a4d7?apikey=${{ secrets.FASTAPI_POSTMAN_API }} \
-        -r htmlextra --reporter-htmlextra-export ./report/index.html
+        -r cli,htmlextra -d calculator_dataset.json --folder "Calculate" --reporter-htmlextra-export ./report/calculator_report.html
+        newman run https://www.postman.com/collections/39842531-a8852f9a-fc51-406b-a8af-b7268582a4d7?apikey=${{ secrets.FASTAPI_POSTMAN_API }} \
+        r cli,htmlextra --folder "SQL with psycopg2" --folder "SQL with ORM" --folder "Webscrape" --reporter-htmlextra-export ./report/report.html
 
     - name: Upload htmlextra report folder as artifact
       uses: actions/upload-artifact@v4
