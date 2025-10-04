@@ -5,24 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Test Reports</title>
     <link rel="stylesheet" href="static/style.css">
+    <style>
+        .container {
+            text-align: center;
+        }
+
+        .project {
+            margin-bottom: 40px;
+        }
+
+        .projects_img {
+            display: block;
+            margin: 0 auto 10px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .links {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .links li {
+            margin: 5px 0;
+        }
+
+        .links a {
+            text-decoration: none;
+            color: #0077cc;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Test reports for portfolio projects</h1>
-        <ul>
-            <li>
-                <a href="https://koma-git.github.io/GithubPortfolio/Flask" target="_blank">
-                    <img src="static/Allure Report.png" class="projects_img" alt="Allure Report">
-                    Flask app - Allure Test Report
-                </a>
-            </li>
-            <li>
-                <a href="https://koma-git.github.io/GithubPortfolio/API-report" target="_blank">
-                    <img src= "static/Newman Summary Report.png" class="projects_img" alt="Newman Summary Report">
-                    FastAPI - Newman Test Report
-                </a>
-            </li>
-        </ul>
+
+        <!-- Flask report -->
+        <div class="project">
+            <img src="static/Allure Report.png" class="projects_img" alt="Allure Report">
+            <ul class="links">
+                <li>
+                    <a href="https://koma-git.github.io/GithubPortfolio/Flask" target="_blank">
+                        Flask app - Allure Test Report
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- FastAPI reports -->
+        <div class="project">
+            <img src="static/Newman Summary Report.png" class="projects_img" alt="Newman Summary Report">
+            <ul class="links">
+                <li>
+                    <a href="https://koma-git.github.io/GithubPortfolio/API-report/calculator_report.html" target="_blank">
+                        FastAPI - Newman Test Report for Calculate endpoints with dataset file
+                    </a>
+                </li>
+                <li>
+                    <a href="https://koma-git.github.io/GithubPortfolio/API-report/report.html" target="_blank">
+                        FastAPI - Newman Test Report for the rest endpoints
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </body>
 </html>
