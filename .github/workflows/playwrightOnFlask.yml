@@ -1,4 +1,4 @@
-name: Run Playwright Tests
+name: Run Playwright Tests for Flask app
 
 on:
   push:
@@ -26,13 +26,13 @@ jobs:
         run: docker build -t flask-app ./Flask
 
       - name: Run Flask container
-        run: docker run -d -p 8000:8000 --name flask-app flask-app
+        run: docker run -d -p 5000:5000 --name flask-app flask-app
 
       - name: Wait for Flask to be ready
         run: |
           echo "Waiting for Flask app on http://localhost:8000"
           for i in {1..30}; do
-            if curl -s http://localhost:8000 > /dev/null; then
+            if curl -s http://localhost:5000 > /dev/null; then
               echo "Flask is up!"
               break
             fi
