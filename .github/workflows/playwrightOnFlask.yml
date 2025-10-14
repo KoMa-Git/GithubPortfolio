@@ -13,19 +13,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      app:
-        build:
-          context: .
-          dockerfile: Flask/Dockerfile
-        ports:
-          - 8000:8000
-        options: >-
-          --health-cmd "curl -f http://localhost:8000 || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -35,22 +22,32 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Playwright dependencies
+      - name: Build Flask Docker image
+        run: docker build -t flask-app ./Flask
+
+      - name: Run Flask container
+        run: docker run -d -p 8000:8000 --name flask-app flask-app
+
+      - name: Wait for Flask to be ready
+        run: |
+          echo "Waiting for Flask app on http://localhost:8000"
+          for i in {1..30}; do
+            if curl -s http://localhost:8000 > /dev/null; then
+              echo "Flask is up!"
+              break
+            fi
+            sleep 1
+          done
+
+      - name: Install Playwright and dependencies
         working-directory: Flask/Playwright
         run: |
           npm ci
           npx playwright install --with-deps
 
-      - name: Wait for Flask app to be ready
-        run: |
-          echo "Waiting for Flask app..."
-          until curl -s http://localhost:8000 > /dev/null; do
-            sleep 1
-          done
-
       - name: Run Playwright tests
         working-directory: Flask/Playwright
-        run: npx playwright test
+        run: npx playwright test --reporter=html --output=test-results
 
       - name: Upload Playwright test report
         uses: actions/upload-artifact@v4
