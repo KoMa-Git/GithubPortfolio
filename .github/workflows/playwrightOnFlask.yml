@@ -1,0 +1,59 @@
+name: Run Playwright Tests
+
+on:
+  push:
+    paths:
+      - 'Flask/Playwright/tests/**'
+  pull_request:
+    paths:
+      - 'Flask/Playwright/tests/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      app:
+        build:
+          context: .
+          dockerfile: Flask/Dockerfile
+        ports:
+          - 8000:8000
+        options: >-
+          --health-cmd "curl -f http://localhost:8000 || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Playwright dependencies
+        working-directory: Flask/Playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps
+
+      - name: Wait for Flask app to be ready
+        run: |
+          echo "Waiting for Flask app..."
+          until curl -s http://localhost:8000 > /dev/null; do
+            sleep 1
+          done
+
+      - name: Run Playwright tests
+        working-directory: Flask/Playwright
+        run: npx playwright test
+
+      - name: Upload Playwright test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: Flask/Playwright/playwright-report/index.html
