@@ -30,7 +30,7 @@ jobs:
 
       - name: Wait for Flask to be ready
         run: |
-          echo "Waiting for Flask app on http://localhost:8000"
+          echo "Waiting for Flask app on http://localhost:5000"
           for i in {1..30}; do
             if curl -s http://localhost:5000 > /dev/null; then
               echo "Flask is up!"
