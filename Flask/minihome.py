@@ -399,4 +399,4 @@ if __name__ == "__main__":
             load_order({'1': {'image': 'zero_g_coffee.jpg', 'name': 'Zero-G Coffee', 'price': 3.99, 'quantity': 1}, '2': {'image': 'alien_snack.jpg', 'name': 'Alien Snack Pack', 'price': 5.49, 'quantity': 1}, '3': {'image': 'rocket_brush.jpg', 'name': 'Rocket-Powered Toothbrush', 'price': 12.99, 'quantity': 1}})
         # can use debug=True at development, then restart server automatically when save changes in code
     
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=8000)
