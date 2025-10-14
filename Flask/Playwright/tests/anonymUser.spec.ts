@@ -2,7 +2,7 @@ import {test ,expect} from '@playwright/test';
 import { PageManager } from '../page-objects/pageManager';
 
 test.beforeEach("Go To page", async({page}) => {
-    await page.goto('http://localhost:8000/');
+    await page.goto('http://localhost:5000/');
     
 });
 
