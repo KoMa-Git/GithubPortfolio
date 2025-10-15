@@ -54,3 +54,12 @@ jobs:
         with:
           name: playwright-report
           path: Flask/Playwright/playwright-report/index.html
+    
+      - name: Deploy Playwright report to GitHub pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GH_PAT }}
+          publish_dir: ./Flask/Playwright/playwright-report
+          destination_dir: Playwright
+          keep_files: true   # <- preserves Flask report
+
