@@ -54,12 +54,14 @@ jobs:
         run: npx playwright test
 
       - name: Upload Playwright test report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: Flask/tests_Playwright/playwright-report/index.html
     
       - name: Deploy Playwright report to GitHub pages
+        if: always()
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GH_PAT }}
