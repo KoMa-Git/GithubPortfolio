@@ -1,5 +1,6 @@
-## AI is everywhere, I have to learn how to use it in an efficient way. 
-This folder contains my experiment testing GitHub Copilot Agent Mode with different models to help me write a library API and tests.
+# AI is everywhere, I have to learn how to use it in an efficient way. 
+This folder contains my experiment testing GitHub Copilot Agent Mode with different models to help me write a library API and tests (finally Postman tests made by me to practice).
+
 I'd like to:
 - gain experience in writing good prompts, and find best practices. 
 - get a better understanding of AI's differences - where each is better or worse - to get the most of out them.
@@ -7,6 +8,11 @@ I'd like to:
 
 I just use the free version of Copilot, which doesn't include the newest models. Since newest models are more effective, end results could be slightly different. When i find time i'll check those as well.
 But a library API is kind of basic stuff, free AI versions surely find many many references online.
+
+## Let's see what was made
+You can find both versions in their folders. I went further with the Claude version and after correcting small things and adjusting the responses to my taste I: 
+**deployed it on Render**: https://library-api-7y4z.onrender.com/docs 
+**created API tests with Postman**: https://www.postman.com/koma-4884/portfolio
 
 ## Prompting approach and how it evolved:
 I started with natural language, without any specification on the app's structure or behaviour. My idea was to reach the goal in iterations, adding endpoints and functions later - which might indicate changes in the core structure (like SQL tables, connections). It's a challenge from real life and it was challenging for AI as well, even in this small-scale project. 
@@ -22,9 +28,3 @@ After checking their resulta, a few glitches came up. Both used a deprecated fun
 It was interesting to see 2 different approaches by the agents. Even after many clean starts with the same prompt, both kept their original concept:
 - **GPT** writes all the code in one file. In a less complex project like this, that might be better. With changes, it has less chance of missing related parts. Probably easier to create tests, fewer integration issues.
 - **Claude** splits the code in separate files with meaningful names and keeps related functions grouped. That suits larger projects better, especially when collaborating or splitting tasks. It also helps if the code needs to be extended later and probably makes debugging easier too. However when i asked to create unit, function or e2e tests it failed, couldn't manage the imports correctly.
-
-## Let's see what was made
-You can find both versions in their folders. I went further with the Claude version and after correcting small things and adjusting the responses to my taste I: 
-- deployed it on Render: https://library-api-7y4z.onrender.com/docs 
-- created API tests with Postman: https://www.postman.com/koma-4884/portfolio
-- and set up a Github actions workflow to see results.
