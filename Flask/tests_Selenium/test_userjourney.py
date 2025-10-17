@@ -1,7 +1,7 @@
 import pytest
 import allure
-from app.minihome import app, db
-from app.db_tools.users import get_password_hash
+from minihome import app, db
+from db_tools.users import get_password_hash
 
 @pytest.fixture
 def client():

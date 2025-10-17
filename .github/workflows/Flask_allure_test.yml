@@ -1,4 +1,4 @@
-name: Run tests on Flask app and publish Allure report with history
+name: Run tests on Flask app with pytest and Selenium
 
 on:
   push:
@@ -23,6 +23,7 @@ jobs:
 
     env:
       BASE_URL: http://127.0.0.1:5000
+      PYTHONPATH: ${{ github.workspace }}/Flask/app
     
     steps:
     - name: Checkout code
