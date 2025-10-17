@@ -1,6 +1,8 @@
 Feature: Cart page
-	This feature allows users to manage the items in their shopping cart,
-  including increasing, decreasing, and changing item quantities.
+  As a user
+  I want to manage the items in my shopping cart,
+  So that I can adjust item quantities by increasing, decreasing, or delete them as needed.
+
 
 @TC004
 Scenario: Increase item quantity in cart

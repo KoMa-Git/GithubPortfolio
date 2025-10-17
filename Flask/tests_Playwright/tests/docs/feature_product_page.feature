@@ -1,5 +1,5 @@
 Feature: Products page
-	As a shopper,
+  As a shopper,
   I want to view a list of available products
   So that I can browse and add items to my cart.
 
