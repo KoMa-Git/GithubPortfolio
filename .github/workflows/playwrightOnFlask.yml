@@ -1,4 +1,4 @@
-name: Run Playwright Tests for Flask app
+name: Run Playwright Tests on Flask app
 
 on:
   push:
