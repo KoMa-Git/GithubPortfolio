@@ -5,14 +5,16 @@ Test cases made from User Journeys you can reach at: https://koma-git.github.io/
 
 Test reports deployed on Github pages.
 
-- Playwright test report: https://koma-git.github.io/GithubPortfolio/Playwright/
-| github action build webshop from docker then runs playwright tests, finally upload on GH pages
-| test files available in [tests_Playwright](/Flask/tests_Playwright/tests/)
+**Playwright test report**: 
+https://koma-git.github.io/GithubPortfolio/Playwright/
+github action build webshop from docker then runs playwright tests, finally upload on GH pages
+test files available in [tests_Playwright](/Flask/tests_Playwright/tests/) folder.
 
-- Pytest and Selenium test report made with Allure: https://koma-git.github.io/GithubPortfolio/Flask/
+**Pytest and Selenium test report made with Allure**: 
+https://koma-git.github.io/GithubPortfolio/Flask/
 | not following full test documentation above. Selenium makes just few UI tests from these test cases.
 | Plus there are unittests and a user journey from register to delete account using pytest.
-| test files available in [tests_Playwright](/Flask/tests_Selenium/)
+| test files available in [tests_Playwright](/Flask/tests_Selenium/) folder.
 
 ## Beyond testing its a Flask learning project:
 
