@@ -1,1 +1,1 @@
-{"total":1,"items":[{"uid":"d50a3aa712517a51c6ce04adb4d03fc8","name":"Flask.tests_Selenium","statistic":{"failed":0,"broken":5,"skipped":0,"passed":12,"unknown":0,"total":17}}]}
+{"total":1,"items":[{"uid":"d50a3aa712517a51c6ce04adb4d03fc8","name":"Flask.tests_Selenium","statistic":{"failed":1,"broken":0,"skipped":0,"passed":16,"unknown":0,"total":17}}]}
