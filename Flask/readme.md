@@ -3,8 +3,6 @@
 
 Test cases made from User Journeys you can reach at: https://koma-git.github.io/GithubPortfolio/TestCases/
 
-Test reports deployed on Github pages.
-
 **Playwright test report**: <br>
 https://koma-git.github.io/GithubPortfolio/Playwright/ <br>
 Github action build webshop from docker then runs playwright tests, finally upload on GH pages <br>
