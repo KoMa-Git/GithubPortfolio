@@ -1,0 +1,22 @@
+{
+  "name": "playwright-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:navigation":"npx playwright test navigationMenu.spec.ts",
+    "test:news":"npx playwright test newsPage.spec.ts",
+    "test:login":"npx playwright test loginPage.spec.ts",
+    "test:user":"npx playwright test userPage.spec.ts",
+    "test:cart":"npx playwright test cartPage.spec.ts",
+    "test:registration":"npx playwright test registrationPage.spec.ts",
+    "test:products":"npx playwright test productsPage.spec.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^24.7.1"
+  }
+}

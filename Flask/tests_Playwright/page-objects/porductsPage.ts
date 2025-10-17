@@ -42,5 +42,6 @@ export class ProductsPage {
     async addToCartRandomProduct() {
         const randomProductName = await this.getRandomProductName();
         await this.addToCart(randomProductName);
+        return randomProductName;
     }
 };

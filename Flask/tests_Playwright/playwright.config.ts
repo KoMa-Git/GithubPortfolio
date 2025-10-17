@@ -34,26 +34,9 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: 'setup', testMatch:'login.setup.ts'
-    },
-    {
-      name: 'loggedInUser',
-      use: { ...devices['Desktop Chrome'], storageState:'./.auth/user.json'},
-      testMatch:'loggedInUser.spec.ts',
-      dependencies: ['setup']
-    },
-
-    {
-      name: 'anonymUser',
-      use: { ...devices['Desktop Chrome'] },
-      testMatch: 'anonymUser.spec.ts'
-    },
-
-    {
+     {
       name: 'regression',
       use: { ...devices['Desktop Chrome'] },
-      testMatch: 'shopFunctions.spec.ts'
     },
 
     /* Test against mobile viewports. */

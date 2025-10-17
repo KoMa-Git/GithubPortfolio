@@ -3,10 +3,14 @@ name: Run Playwright Tests for Flask app
 on:
   push:
     paths:
-      - 'Flask/Playwright/tests/**'
+      - 'Flask/app/**'
+      - '!Flask/app/**.md'
+      - 'Flask/tests_Playwright/tests/**'  
   pull_request:
     paths:
-      - 'Flask/Playwright/tests/**'
+      - 'Flask/app/**'
+      - '!Flask/app/**.md'
+      - 'Flask/tests_Playwright/tests/**'
   workflow_dispatch:
 
 jobs:
@@ -23,7 +27,7 @@ jobs:
           node-version: 20
 
       - name: Build Flask Docker image
-        run: docker build -t flask-app ./Flask
+        run: docker build -t flask-app ./Flask/app
 
       - name: Run Flask container
         run: docker run -d -p 8000:8000 --name flask-app flask-app
@@ -40,26 +44,26 @@ jobs:
           done
 
       - name: Install Playwright and dependencies
-        working-directory: Flask/Playwright
+        working-directory: Flask/tests_Playwright
         run: |
           npm ci
           npx playwright install --with-deps
 
       - name: Run Playwright tests
-        working-directory: Flask/Playwright
+        working-directory: Flask/tests_Playwright
         run: npx playwright test
 
       - name: Upload Playwright test report
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: Flask/Playwright/playwright-report/index.html
+          path: Flask/tests_Playwright/playwright-report/index.html
     
       - name: Deploy Playwright report to GitHub pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GH_PAT }}
-          publish_dir: ./Flask/Playwright/playwright-report
+          publish_dir: ./Flask/tests_Playwright/playwright-report
           destination_dir: Playwright
-          keep_files: true   # <- preserves Flask report
+          keep_files: true   # <- preserves other reports
 

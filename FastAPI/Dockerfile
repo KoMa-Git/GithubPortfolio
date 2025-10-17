@@ -1,7 +1,7 @@
 FROM python:3.13-alpine AS build
 
 RUN apk add build-base libpq-dev
-COPY ./requirements-build.txt .
+COPY ./app/requirements-build.txt .
 RUN pip install --no-cache-dir -r requirements-build.txt
 
 FROM python:3.13-alpine AS final
@@ -10,7 +10,7 @@ RUN apk add --no-cache libpq
 
 WORKDIR home/app
 
-COPY . .
+COPY ./app .
 RUN pip install --no-cache-dir -r requirements-final.txt
 COPY --from=build /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 

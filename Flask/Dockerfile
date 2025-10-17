@@ -10,7 +10,7 @@ FROM python:3.10-alpine AS build
 
 RUN apk add build-base libpq-dev
 
-COPY ./requirements-dev.txt .
+COPY ./app/requirements-dev.txt .
 
 RUN pip install --no-cache-dir -r requirements-dev.txt
 
@@ -22,7 +22,7 @@ RUN apk update \
 
 WORKDIR Flask/
 
-COPY . .
+COPY ./app .
 COPY --from=build /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
 

@@ -48,13 +48,13 @@ jobs:
 
     - name: Start Flask app in background
       run: |
-        nohup python Flask/minihome.py > flask.log 2>&1 &
+        nohup python Flask/app/minihome.py > flask.log 2>&1 &
         sleep 5  # wait for app to start
 
     - name: Run tests and generate new allure-results
       continue-on-error: true
       run: |
-        pytest Flask/tests --alluredir=Flask/allure-results
+        pytest Flask/tests_Selenium --alluredir=Flask/allure-results
 
     - name: Download and inject previous history from gh-pages
       run: |
