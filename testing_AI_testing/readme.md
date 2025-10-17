@@ -10,9 +10,9 @@ I just use the free version of Copilot, which doesn't include the newest models.
 But a library API is kind of basic stuff, free AI versions surely find many many references online.
 
 ## Let's see what was made
-You can find both versions in their folders. I went further with the Claude version and after correcting small things and adjusting the responses to my taste I: <br>
-**deployed it on Render**: https://library-api-7y4z.onrender.com/docs <br> 
-**created API tests with Postman**: https://www.postman.com/koma-4884/portfolio
+You can find both versions in their folders. I went further with the Claude version and after correcting small things and adjusting the responses to my taste, <br>
+**I deployed it on Render**: https://library-api-7y4z.onrender.com/docs <br> 
+**and created API tests with Postman**: https://www.postman.com/koma-4884/portfolio
 
 ## Prompting approach and how it evolved:
 I started with natural language, without any specification on the app's structure or behaviour. My idea was to reach the goal in iterations, adding endpoints and functions later - which might indicate changes in the core structure (like SQL tables, connections). It's a challenge from real life and it was challenging for AI as well, even in this small-scale project. 
