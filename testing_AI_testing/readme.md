@@ -10,8 +10,8 @@ I just use the free version of Copilot, which doesn't include the newest models.
 But a library API is kind of basic stuff, free AI versions surely find many many references online.
 
 ## Let's see what was made
-You can find both versions in their folders. I went further with the Claude version and after correcting small things and adjusting the responses to my taste I: 
-**deployed it on Render**: https://library-api-7y4z.onrender.com/docs 
+You can find both versions in their folders. I went further with the Claude version and after correcting small things and adjusting the responses to my taste I: <br>
+**deployed it on Render**: https://library-api-7y4z.onrender.com/docs <br> 
 **created API tests with Postman**: https://www.postman.com/koma-4884/portfolio
 
 ## Prompting approach and how it evolved:
