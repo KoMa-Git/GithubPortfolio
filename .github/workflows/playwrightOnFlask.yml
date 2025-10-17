@@ -27,7 +27,7 @@ jobs:
           node-version: 20
 
       - name: Build Flask Docker image
-        run: docker build -t flask-app .
+        run: docker build -t flask-app Flask/.
 
       - name: Run Flask container
         run: docker run -d -p 8000:8000 --name flask-app flask-app
