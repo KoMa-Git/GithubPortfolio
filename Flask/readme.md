@@ -2,8 +2,8 @@
 # Flask microsite for manual and automate testing
 
 **Test cases made from User Journeys you can reach at**: <br>
-https://koma-git.github.io/GithubPortfolio/TestCases/ or at <br>
-[docs](/Flask/tests_Playwright/tests/docs/) folder.
+https://koma-git.github.io/GithubPortfolio/TestCases/ <br>
+or at [docs](/Flask/tests_Playwright/tests/docs/) folder.
 
 **Playwright test report**: <br>
 https://koma-git.github.io/GithubPortfolio/Playwright/ <br>
