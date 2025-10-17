@@ -25,7 +25,7 @@ def driver(request):
     driver.quit()
 
 
-BASE_URL = "http://127.0.0.1:5000"
+BASE_URL = "http://127.0.0.1:8000"
 TEST_EMAIL = "test@example.com"
 TEST_NAME = "Test User"
 TEST_PASSWORD = "password123"
