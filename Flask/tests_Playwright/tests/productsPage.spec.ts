@@ -6,7 +6,7 @@ test.beforeEach("Go to homepage", async({page}) => {
     
 });
 
-test("TC003 - Add item to cart", async({page})=> {
+test("TC003A - Add item to cart", async({page})=> {
     const pm = new PageManager(page);
     await pm.navigateTo().products();
 
@@ -27,7 +27,7 @@ test("TC003 - Add item to cart", async({page})=> {
     await expect(page.locator('tbody')).toContainText(productName);
 });
 
-test("TC004 - Add all visible products to the cart", async({page}) => {
+test("TC003B - Add all visible products to the cart", async({page}) => {
     const pm = new PageManager(page);
     await pm.navigateTo().products();
     const products = await page.locator('.col .card').all();

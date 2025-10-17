@@ -7,13 +7,13 @@ Feature: Products page
     Given the user is on the products page
     And the user sees a list of products
 
-@TC003
+@TC003A
 Scenario: Add item to cart
   When the user clicks the "Add to cart" button on a product card
   Then the user sees an "Added product to cart" notification
   And the cart badge number increases by 1
 
-@TC004
+@TC003B
 Scenario: Add all visible products to the cart
   When the user adds each visible product to the cart
   Then each product should be added successfully
