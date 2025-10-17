@@ -39,7 +39,7 @@ test("TC005 - Decrease item quantity in cart", async({page}) => {
     const itemPrice = Number(itemPriceWithCurrency.split(" ")[0]);
     //add 1 more product
     await page.locator('.cart-item').getByRole('button', {name: '+'}).click();
-    
+    await expect(page.locator('.notification').last()).toHaveText('Cart updated');
     //store data before test action
     const totalWithCurrency = await page.locator('#end-total').innerText();
     const total = Number(totalWithCurrency.split(" ")[0]);
