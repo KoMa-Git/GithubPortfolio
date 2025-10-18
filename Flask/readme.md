@@ -14,7 +14,7 @@ Test files available in [tests_Playwright](/Flask/tests_Playwright/tests/) folde
 https://koma-git.github.io/GithubPortfolio/Flask/ <br>
 Not following full test documentation above. Selenium makes just few UI tests from these test cases. <br>
 Plus there are unittests and a user journey from register to delete account using pytest. <br>
-Test files available in [tests_Playwright](/Flask/tests_Selenium/) folder. <br>
+Test files available in [tests_Selenium](/Flask/tests_Selenium/) folder. <br>
 
 ## Beyond testing its a Flask learning project:
 
